@@ -1,0 +1,81 @@
+---
+import { getCollection, type CollectionEntry } from 'astro:content';
+import { Picture } from 'astro:assets';
+import BaseLayout from '@/layouts/BaseLayout.astro';
+
+export async function getStaticPaths() {
+  const courses = await getCollection('courses');
+  return courses.map(course => ({
+    params: { slug: course.slug },
+    props: { course },
+  }));
+}
+
+type Props = {
+  course: CollectionEntry<'courses'>;
+}
+
+const { course } = Astro.props;
+const { Content } = await course.render();
+---
+
+<BaseLayout title={course.data.title} description={course.data.description}>
+  <div class="container mx-auto py-16 px-4">
+    <article class="prose prose-lg max-w-4xl mx-auto dark:prose-invert">
+      <h1 class="text-6xl  text-center mb-8">{course.data.title}</h1>
+      
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-start mb-8">
+        <div class="course-description">
+          <p class="lead text-black dark:text-white ">{course.data.description}</p>
+          <p class="mt-4 text-black dark:text-white">Language: {course.data.language}</p>
+          
+           {course.data.teaser && (
+            <a href={course.data.teaser} class="cta-btn no-underline mt-6 inline-block px-8 py-3 bg-white border border-black text-black hover:bg-black hover:text-white rounded-md shadow transition-colors duration-200" target="_blank" rel="noopener noreferrer" download>
+              Download Teaser
+            </a>
+          )}
+          <br />
+          <a href={course.data.cta} class="cta-btn no-underline mt-6 inline-block px-8 py-3 bg-white border border-black text-black hover:bg-black hover:text-white rounded-md shadow-lg transition-colors duration-200" target="_blank" rel="noopener noreferrer">
+            Schedule a meeting
+          </a>
+        </div>
+        
+        <div class="course-gallery flex flex-col gap-4 p-4">
+          {course.data.gallery.map((media) => (
+            <Picture 
+              src={media.src} 
+              alt={media.alt || course.data.title} 
+              class="w-full h-auto object-cover" 
+              widths={[200,400, 800]} 
+              sizes="(max-width: 768px) 100vw, 50vw"
+              loading="eager"
+              formats={["webp", "avif", "png", "jpeg"]}
+              decoding="async"
+            />
+          ))}
+        </div>
+      </div>
+
+      <div class="course-copy bg-white/50 dark:bg-black/50 backdrop-blur-sm rounded-xl p-8 mb-8">
+        <h2 class="text-4xl font-semibold mb-4 text-liquirice dark:text-jabro">Course Overview</h2>
+        <div class="prose prose-lg dark:prose-invert">
+          <Content />
+        </div>
+      </div>
+
+      {course.data.faqs && course.data.faqs.length > 0 && (
+        <div class="mt-16 pt-8">
+          <h2 class="text-3xl  text-center mb-8">Frequently Asked Questions</h2>
+          <div class="space-y-6">
+            {course.data.faqs.map((faq) => (
+              <details class="bg-white/30 dark:bg-black/30 backdrop-blur-md rounded-xl p-6 shadow-sm">
+                <summary class="text-xl font-semibold cursor-pointer transition-colors">{faq.question}</summary>
+                <p class="mt-4 text-lg">{faq.answer}</p>
+              </details>
+            ))}
+          </div>
+        </div>
+      )}
+    </article>
+  </div>
+</BaseLayout>

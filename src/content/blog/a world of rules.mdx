@@ -1,0 +1,264 @@
+---
+title: 'A world of rules'
+description: 'More control, efficiency and cost savings with AI assisted development'
+icon: "🦆"
+pubDate: '2025-06-20'
+heroImage: "/src/assets/a world of rules.jpeg"
+tags: ['Coding Assistants', 'Agentic AI', 'LLMs', 'Claude', 'Cline', 'MCP']
+---
+import { Image } from 'astro:assets';
+
+<Image loading="eager" src={import('../../assets/a world of rules.jpeg')} alt="a world of rules" />
+Large language models have finally reached a level of tangible usability economically and professionally. While they are still stochastic parrots to a certain degree - let's be clear about that - they can do a great deal of good work within the right environment and with the proper guardrails.\
+\
+There's a plethora of different solutions available, some more technical than others. However, depending on your budget and specific use case, there can be significant price differences. This isn't just about tool cost; it's about the underlying operational expenses that can quickly escalate.\
+\
+[Cursor](https://cursor.ai/download), for instance, costs $20 and offers a great set of features with access to every tool-capable model. However, context is often limited across models unless you're willing to pay a premium. If you want, for instance, Gemini 2.5 Pro's full 1 million token context, you'll have to commit financially. It's also the only model I've tried that could actually handle 500k+ tokens without outputs becoming unpredictable.\
+\
+[Cline](https://cline.bot/), a VS Code extension, boasts what many consider the best agent on the market. But again, you'll need to open your wallet. This can get expensive fast, especially with extensive tool calls - a direct hit to your project's budget.\
+\
+Then there's [GitHub Copilot](https://copilot.github.com/). A solid, reliable tool, yet, much like other enterprise-focused products, it often carries the burden of the large organizations that rely on it. This can limit its flexibility, making it feel less dynamic and responsive compared to other solutions on the market. It's reliable, yes, but its constraints can sometimes feel like a missed opportunity for peak efficiency.\
+\
+Now, how can we effectively manage both the cost, context, and efficiency of these powerful models? How can we even leverage cheaper and faster models while ensuring their outputs are consistently better and more relevant to our specific needs?\
+\
+The short answer, the concise and critical principle, is **RULES**.
+
+## Rules RULE
+
+For this example, I'll be using Cursor, but these principles apply across virtually every AI-assisted development environment. Let's start with something fundamental: **behavior**. In Cursor, you can add user rules (also known as custom instructions). These are the broad strokes that guide your AI's responses in your IDE. Do you need more verbose explanations or concise outputs? Should it act more like a guiding mentor, or an obedient, proactive assistant?
+
+```markdown
+
+# Cursor Rules for Development
+
+## Environment & Package Management
+- Use the appropriate package manager for the project's language/ecosystem
+- Before installing any new package, search for and review its documentation
+- Document all dependencies in the appropriate dependency file with version pinning
+- Include brief justification comments for each dependency addition
+- If not present, create a todo.md file and a design.md file
+
+## Task Management System
+
+### Todo.md Protocol
+- **READ-ONLY POLICY**: Never delete existing todos without explicit permission
+- Always mark completed tasks with ✅ instead of removing them
+- Each task must follow this format:
+  
+  - [ ] [T123] Task description [Complexity: N/10] [Priority: High/Medium/Low] [Status: Pending/In-Progress/Blocked/Complete]
+    - Context: Brief explanation of why this task matters
+    - Acceptance criteria: What determines this task is complete
+    - Dependencies: [Task IDs this task depends on]
+    - Subtasks: (for complexity > 5/10)
+      - [ ] [T123.1] Subtask 1 [Complexity: N/10]
+      - [ ] [T123.2] Subtask 2 [Complexity: N/10]
+  
+- Break down any task with complexity > 5/10 into subtasks
+- Add estimated time to completion for each task when possible
+- Always sort tasks by priority, then status
+
+### Task Dependencies
+- Assign a unique ID to each task (e.g., T1, T2, T3...)
+- Explicitly list dependencies in the task format using these IDs
+- Never start a task before all its dependencies are completed
+- If attempting a task with incomplete dependencies:
+  1. Note the dependency issue in the todo.md
+  2. Mark the task as "Blocked" with reason
+  3. Work on the dependency tasks first
+- Visualize dependency chains when planning complex features
+- For tasks with circular dependencies, flag them for redesign
+
+### Design.md Protocol
+- **PERMISSION REQUIRED**: Never modify design.md without explicit permission
+- For any potential design changes, propose them separately with:
+  
+  #### Proposed Design Change
+  - Current design: [quote relevant section]
+  - Proposed change: [suggestion]
+  - Rationale: [explanation]
+
+- Before implementing any feature, verify it aligns with design.md goals
+- If implementation reveals design challenges, document them separately for review
+
+## Workflow Process
+1. Begin each session by reading design.md and todo.md
+2. Identify tasks with no incomplete dependencies
+3. Among these, select the highest priority pending task
+4. Before coding, verify task alignment with design goals
+5. Update task status to "In-Progress" when starting
+6. If complexity assessment was inaccurate, update and break down if needed
+7. Document progress inline with code
+8. Update task status upon completion
+9. Update any dependent tasks from "Blocked" to "Pending" if all dependencies are now met
+
+## Documentation Requirements
+- Maintain clear documentation for all functions, methods, and classes
+- Update README.md when adding significant features
+- Document any deviations from design.md for review
+- Ensure API documentation stays current
+- Create usage examples for new features
+
+## Self-Improvement Protocol for .cursorrules
+
+### Monitoring Rules
+- Continuously evaluate the effectiveness of current cursor rules during development
+- Identify patterns where rules are insufficient, redundant, or causing friction
+
+### Improvement Triggers
+- When a rule is consistently bypassed or ignored
+- When project complexity increases beyond current rule coverage
+- When repetitive manual clarification is needed
+- When development velocity slows due to process overhead
+- When tasks are frequently misinterpreted or misaligned
+
+### Suggestion Format
+When suggesting improvements to the .cursorrules file:
+
+#### Rule Improvement Suggestion
+- Current rule: [quote current rule or "N/A" if new]
+- Suggested change: [addition/modification/removal]
+- Rationale: [specific examples of how this improves workflow]
+- Context: [project circumstances that prompted this suggestion]
+- Impact: [how this change would affect workflow/productivity]
+
+
+### Implementation Process
+1. Collect rule improvement suggestions over time
+2. Present rule changes in batches to minimize disruption
+3. After implementing rule changes, add a changelog entry
+4. Monitor effectiveness of new rules for at least two development sessions
+5. Revert changes that introduce more friction than they solve
+
+### Continuous Adaptation
+- Adjust rule granularity based on project phase (more detailed in early phases, more streamlined in later phases)
+- Tailor rules to accommodate specific language/framework requirements as they emerge
+- Scale complexity tracking requirements based on team size and project scope
+
+```
+
+
+This isn't a trivial setup; **it's a strategic decision.** You should dedicate focused time - perhaps a full day - to conceptualizing and refining how your AI assistant should behave. Consider if behavior settings should be universally applied or if they are best suited to be project-dependent. This upfront investment ensures your AI becomes a true extension of your team's workflow and not just another unpredictable variable. It's about codifying efficiency from the ground up.
+
+## Scope
+
+| **Example Rules** | **Rule Conditions** |
+| --- | --- |
+| <Image src={import('../../assets/cursor-rules.png')} alt="Scope" loading="lazy" /> | <Image src={import('../../assets/Cursor-rule-conditions.png')} alt="Scope" loading="lazy" /> |
+|  Rule files can be very general or very specific, just be mindful that they will be part of your context budget. | Rule conditions can be file types, always attached to context, always manually envoked or triggered by automatically based on context. |
+
+Project or framework-specific rules are where you can make the most significant, impactful differences for your team. In Cursor, you can create a dedicated `./Cursor/rules` folder with `.mdc` files. These are essentially markdown files with enhanced features. Within them, you can write your rules and crucially, decide *how* and *when* they are applied. Should they always be present? Only for certain folders or file types? Or should the LLM intelligently apply rules based on the immediate context of the task?
+
+**Example:**
+
+```markdown
+You are an expert in the Astro framework and typescript.
+
+  Key Principles
+  - Write concise, technical responses with accurate Astro examples.
+  - Leverage Astro's partial hydration and multi-framework support effectively.
+  - Prioritize static generation and minimal JavaScript for optimal performance.
+  - Emphasize HTML streaming for faster perceived load times.
+  - Use descriptive variable names and follow Astro's naming conventions.
+  - Organize files using Astro's file-based routing system.
+
+  Astro Project Structure
+  - Use the recommended Astro project structure:
+    - src/
+      - assets/ (for images, fonts, etc., processed by Astro)
+      - components/
+      - layouts/ (for reusable page structures)
+      - pages/ (for routes)
+      - styles/
+      - content/ (for content collections, e.g., blog posts, products)
+    - public/ (for static assets not processed by Astro)
+    - astro.config.mjs
+    - tsconfig.json (if using TypeScript)
+
+  Component Development
+  - Create .astro files for Astro components.
+  - Use framework-specific components (React, Vue, Svelte) when necessary, hydrating them with client directives.
+  - Implement proper component composition and reusability. Pass data via props.
+  - Use Astro's component props for data passing. For type safety, define prop types using TypeScript interfaces.
+  - Leverage Astro's built-in components like `<Markdown />` (for MD/MDX content) and `astro:assets`'s `<Image />` and `<Picture />` components.
+
+```
+
+**This level of precision is key to scalability and consistency.** By scoping rules appropriately, you enforce best practices, architectural patterns, and coding standards automatically. This dramatically reduces code review cycles, streamlines onboarding for new developers by embedding project knowledge directly into the AI, and ensures a consistent output quality across your entire team. It's about building a predictable, high-quality development pipeline.
+
+## What can rules be?
+
+ANYTHING. But remember, they are **rules**; they carry weight and significantly shape outputs. As someone who primarily uses Astro for web development, I've developed rules that automatically enforce best practices and correct nuances that LLMs often overlook or mix up when generating Astro code.
+
+Consider your organization's specific style guide. Instead of circulating a lengthy `style-guide.md` document and relying on manual adherence, you can distill the most crucial rules-colors, fonts, margins, component structures-into a rule set for your AI. The AI then applies these consistently and automatically. This offloads the meticulous enforcement of granular details from your developers to the AI.
+
+**Example:**
+
+```markdown
+# design-rules.mdc
+
+## UI & Design Consistency Rules
+
+### 1. Source of Truth
+- `style-guide.md` is the canonical reference for all visual, branding, and UI work. All implementation must strictly adhere to its specifications for color, typography, effects, and spacing.
+- No deviations from `style-guide.md` or `design.md` are permitted without a formal design change proposal.
+
+### 2. Component Library & Usage
+- **Primary UI Library:** Use Shadcn UI for all standard UI elements (buttons, inputs, cards, dialogs, etc.).
+  - Install via: `bunx shadcn-ui@latest add [component-name]`
+  - Always import from your local `~/components/ui` directory.
+- **No Other UI Libraries:** Do not introduce other general-purpose UI libraries without explicit approval. Use custom components (with Tailwind and Next.js primitives) only if Shadcn cannot meet requirements (see Deviation Protocol).
+
+### 3. Customization & Styling
+- **Tailwind CSS is the main styling tool.**
+  - All colors, fonts, and spacing from `style-guide.md` must be defined in `tailwind.config.js` under `theme.extend`.
+  - Use CSS variables in `globals.css` as the source for Tailwind theme colors.
+  - Example: `primary-accent: #FF3366;` in `globals.css`, then `primaryAccent: 'var(--primary-accent)'` in `tailwind.config.js`.
+- **Override Shadcn defaults** using Tailwind utility classes to match `style-guide.md` for:
+  - Colors (backgrounds, text, borders)
+  - Typography (font family, weight, casing)
+  - Border radii, shadows, and spacing
+  - Effects (e.g., `backdrop-blur-[16px]`, `bg-white/10`, custom shadows)
+- **Component Anatomy:** Modify Shadcn components via Tailwind classes or documented Shadcn extension patterns. Avoid direct CSS overrides that break accessibility or structure.
+```
+
+### Rules can even be self-improving
+
+I've implemented rules that automate the process of refining and creating new rules based on issues encountered during development. This forms a continuous feedback loop that progressively sharpens the focus and efficacy of your AI assistant. It's akin to having a tireless, self-optimizing quality assurance mechanism working for your team 24/7. This includes rules for memory management and task orchestration, further enhancing the AI's utility.
+
+<Image src={import('../../assets/selfimprovement_upscayl_2x.jpeg')} alt="Self-Improvement Rules" loading="lazy" />
+
+I recommend leveraging tools like the [Context7 MCP](https://context7.com/mcp) to automatically pull up-to-date documentation and intelligently create or update your rules based on it, at least during the initial setup phases. This ensures your rules are always relevant and accurate.
+
+```markdown
+# Self-Improvement Rules
+
+1. Regularly review Cursor rules for friction and redundancy.
+2. Suggest improvements and await user feedback
+3. Batch rule changes and monitor their effectiveness.
+4. Automatically apply best practice rules when presented with up-to-date documentation.
+```
+
+## Time spent is time saved
+
+You've invested time into creating these razor-sharp rules, ensuring your assistant's behavior is impeccably efficient. What's the actual gain for your organization now?
+
+With proper scopes and guardrails in place, leveraging even premium context windows becomes economically very sensible. Consider the cost-efficiency, especially with models like Google's Gemini Flash, which offer extensive context at highly competitive rates:
+
+| Provider  | Model                | Context Window | Input Price ($/1M)            | Output Price ($/1M)           |
+| :-------- | :------------------- | :------------- | :----------------------------- | :----------------------------- |
+| Anthropic | Claude 4 Opus        | 200K           | $15.00                        | $75.00                        |
+| Anthropic | Claude 4 Sonnet      | 200K           | $3.00                         | $15.00                        |
+| OpenAI    | GPT-4.1              | 1M             | $2.00                         | $8.00                         |
+| Google    | Gemini 2.5 Pro       | 1M             | $1.25 (≤200K) / $2.50 (>200K) | $10.00 (≤200K) / $15.00 (>200K) |
+| Google    | Gemini 2.5 Flash     | 1M             | **$0.15**                     | **$0.60**                     |
+
+This represents a significant advantage, particularly when you need to review an entire codebase, integrate a large feature, or explore a new concept. Allowing the agent to operate in auto-mode for several minutes, within your established rules, becomes a viable and cost-effective strategy.
+If you are using Cursor you have to **enable MAX mode** to unlock the full context window. On the extensionCline it's unlocked by default, and it will let you keep track of both context and cost very easily.
+
+## YOLO PRO MAX
+
+The power of rules is truly unleashed when you allow your agents to run in "auto mode." They gain a level of autonomy that's both liberating and reassuring. They will pause and seek your input for crucial decisions or before executing destructive commands. You remain in control, much like supervising an automated vehicle. \
+\
+This frees you to engage in other critical tasks - checking an email, strategizing, or focusing on high-level architecture - while your AI diligently works on aligning components, finding documentation ambiguities, identifying bugs, or flagging anything that genuinely requires your attention. \
+<Image src={import('../../assets/yolo.jpeg')} alt="Bungee Jump YOLO" loading="lazy" />
+Now YOU can focus your human ingenuity where it matters most and still use your brain so you don't lose your edge out of pure laziness.

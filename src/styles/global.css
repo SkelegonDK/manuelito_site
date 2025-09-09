@@ -1,0 +1,136 @@
+/* The integration's default injected base.css file */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@font-face {
+    font-family: 'Alexandria';
+    src: url('/fonts/Alexandria-Bold.woff2') format('woff2'),
+         url('/fonts/Alexandria-Bold.woff') format('woff');
+    font-weight: 700;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Alexandria';
+    src: url('/fonts/Alexandria-Light.woff2') format('woff2'),
+         url('/fonts/Alexandria-Light.woff') format('woff');
+    font-weight: 300;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Alexandria';
+    src: url('/fonts/Alexandria-Regular.woff2') format('woff2'),
+         url('/fonts/Alexandria-Regular.woff') format('woff');
+    font-weight: 400;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+  font-family: "Frick";
+  font-style: normal;
+  font-display: swap;
+  src: url("/fonts/Frick0.3-Regular.woff2") format("woff2");
+  font-weight: 400;
+}
+
+@layer base {
+  :root {
+    /* Brand tokens from style-guide.md */
+    --jabro: #FFFD74;         /* Light theme background - bright yellow */
+    --nintendbro: #CC252C;    /* Primary accent - Nintendo red */
+    --bluey: #96C7F2;         /* Secondary accent - sky blue */
+    --liquirice: #303030;     /* Dark theme background - deep charcoal */
+    --brony: #614051;         /* Subtext color - muted purple */
+
+    /* RGB tokens for opacity support */
+    --jabro-rgb: 255 253 116;
+    --nintendbro-rgb: 204 37 44;
+    --bluey-rgb: 150 199 242;
+    --liquirice-rgb: 48 48 48;
+    --brony-rgb: 97 64 81;
+
+    /* Theme variables (light by default) */
+    --background: var(--jabro);
+    --text: var(--liquirice);
+  }
+  
+  /* Dark theme overrides (supports class and data attribute) */
+  [data-theme="dark"],
+  .dark {
+    --background: var(--liquirice);
+    --text: var(--jabro);
+  }
+  
+  body {
+    font-family: 'Alexandria', sans-serif;
+    background-color: var(--background);
+    color: var(--text);
+    transition: background-color 0.3s ease, color 0.3s ease;
+  }
+}
+.video-bg {
+  object-fit: cover;
+  width: 100vw;
+  height: 100vh;
+  position: fixed;
+  image-rendering: pixelated;
+  z-index: -1;
+  top: 0;
+  left: 0;
+  /* Ensure smooth transition between poster and video */
+  transition: opacity 0.5s ease;
+}
+.button {
+  outline: none!important;
+  transition: all 0.05s;
+}
+
+.frick {
+  font-family: 'Frick', sans-serif;
+  letter-spacing: 0.05em;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: 'Frick', sans-serif;
+  font-weight: normal;
+}
+.button:active {
+  transform: translateY(4px);
+  border-bottom-width: 4px;
+  outline: none;
+}
+
+/* Image preloading and hover effects */
+.preload-trigger {
+  position: relative;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  cursor: pointer;
+}
+
+.preload-trigger:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+}
+
+.image-container.preload-trigger:hover img {
+  transform: scale(1.05);
+}
+
+/* Ensure images in preload triggers have smooth transitions */
+.preload-trigger img {
+  transition: transform 0.3s ease, opacity 0.3s ease;
+}
+
+/* Blog hero image container */
+.blog-hero-image-container {
+  transition: opacity 0.5s ease;
+}
+
+.blog-hero-image-container img {
+  transition: opacity 0.5s ease, transform 0.5s ease;
+}

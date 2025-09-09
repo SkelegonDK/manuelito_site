@@ -1,0 +1,189 @@
+---
+import { Icon } from "astro-icon/components";
+import { Picture } from "astro:assets";
+import ContactButton from "@/components/ContactButton.astro";
+import heroImage from "@/assets/manuel.png";
+
+const images = import.meta.glob<{ default: ImageMetadata }>(
+  "/src/assets/*.{jpeg,jpg,png,gif}",
+);
+---
+
+<section class="hero-section px-4 md:px-0 relative">
+  <!-- Content container with higher z-index -->
+  <div class="container md:justify-between mx-auto relative z-10 flex lg:flex-row md:flex-row sm:flex-col flex-col gap-10 md:gap-0">
+    <!-- Hero text section -->
+    <div class="flex flex-col lg:gap-6 gap-2 justify-start items-start md:w-1/2 animate-fade-in">
+      <h1 class="frick lg:text-7xl text-4xl text-liquirice dark:text-white">Manuel Thomsen</h1>
+      <h2 class="text-white dark:text-jabro lg:text-4xl text-3xl">Creative Technologist</h2>
+      <p class="text-liquirice dark:text-white lg:text-lg text-md">
+        AI for creative production & digital design.
+      </p>
+      
+      <!-- Social Icons -->
+      <div class="flex items-center gap-8 text-white  lg:text-xl text-lg mt-2">
+        <a
+          href="https://github.com/skelegondk"
+          target="_blank"
+          class=" p-1 "
+        > <title>Github</title>
+          <Icon name="fa6-brands:github" size="60" />
+        </a>
+        <ContactButton />
+      </div>
+      
+    </div>
+    
+    <!-- Hero image section -->
+    <div class= "justify-center items-center anitext-jabroin-delayed backdrop-blur-md md:w-1/3 lg:w-1/3 overflow-hidden md:flex hidden sm:hidden ">
+      <div class="hero-image-container relative  bg-bluey/50 dark:bg-black/30 rounded-lg shadow-xl">
+        <Picture 
+          src={heroImage}
+          loading="eager"
+          alt="Manuel Thomsen - Creative Technologist" 
+          class="hero-image"
+          formats={["webp", "avif", "png", "jpeg"]}
+          widths={[500, 1000, 1500]}
+          sizes="(max-width: 768px) 100vw, 50vw"
+          loading="eager"
+          decoding="async"
+        />
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Call to Action -->
+<!-- <div class="py-8 text-center">
+  <p class="mb-4 text-liq dark:text-gray-200">
+    Interested in working together?
+    <br />
+    Let's discuss your project!
+  </p>
+  
+</div> -->
+
+<style>
+  /* Hero section */
+  .hero-section {
+    min-height: 85vh;
+    display: flex;
+    align-items: center;
+    position: relative;
+  }
+  
+  /* Hero image styling */
+  .hero-image-container {
+    position: relative;
+    z-index: 2;
+    overflow: visible;
+  }
+  
+  .hero-image {
+    max-width: 100%;
+    height: auto;
+    object-fit: contain;
+    filter: drop-shadow(0 10px 8px rgb(0 0 0 / 0.04)) drop-shadow(0 4px 3px rgb(0 0 0 / 0.1));
+  }
+  
+  /* Photo card styling */
+  .photo-link {
+    position: relative;
+    display: block;
+  }
+  
+  .photo-card {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    align-items: flex-end;
+  }
+  
+  /* Image container styling */
+  .image-container {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    z-index: 2;
+    overflow: visible;
+    bottom: 0;
+  }
+  
+  .profile-image {
+    display: block;
+    position: relative;
+    bottom: 0;
+    max-width: none;
+    width: auto;
+    height: 295px; /* Match the height of the card (h-52 = 13rem = 208px) */
+    z-index: 3;
+    transform-origin: bottom center;
+  }
+  
+  .group:hover .profile-image {
+    transform: scale(1.05);
+  }
+  
+  /* Animations */
+  .animate-fade-in {
+    animation: fadeIn 1s ease-in-out;
+  }
+  
+  .animate-fade-in-delayed {
+    animation: fadeIn 1s ease-in-out 0.3s;
+    animation-fill-mode: both;
+  }
+  
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(10px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+</style>
+
+<script>
+  // Add class to body when page loads
+  document.addEventListener('DOMContentLoaded', () => {
+    document.body.classList.add('has-video-bg');
+  });
+</script>
+
+<script>
+  // Ensure dark/light mode classes are applied to the HTML element
+  document.addEventListener('DOMContentLoaded', () => {
+    // Get theme from localStorage first, then fall back to system preference
+    const theme = (() => {
+      if (typeof localStorage !== 'undefined' && localStorage.getItem('theme')) {
+        return localStorage.getItem('theme');
+      }
+      if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        return 'dark';
+      }
+      return 'light';
+    })();
+    
+    // Apply theme to html element if not already applied
+    if (!document.documentElement.classList.contains('dark') && !document.documentElement.classList.contains('light')) {
+      if (theme === 'dark') {
+        document.documentElement.classList.add('dark');
+      } else {
+        document.documentElement.classList.add('light');
+      }
+    }
+    
+    // Also apply theme to body as a fallback
+    if (theme === 'dark') {
+      document.body.classList.add('dark');
+    } else {
+      document.body.classList.add('light');
+    }
+  });
+</script>

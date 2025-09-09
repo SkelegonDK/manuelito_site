@@ -1,0 +1,14 @@
+---
+import Link from "./HeaderLink.astro";
+import ThemeIcon from "./ThemeIcon.astro";
+
+---
+
+<ul class="items-center md:gap-6 text-nowrap hidden md:flex list-none xl:text-xl">
+  <li><Link href="/" text="Home" style="primary" /></li>
+  <li><Link href="/about" text="About Me" style="tertiary" /></li>
+  <li><Link href="/courses" text="Courses" style="tertiary" /></li>
+  <li><Link href="/gallery" text="Gallery" style="tertiary" /></li>
+  <li><Link href="/blog" text="Blog" style="primary" /></li>
+</ul>
+<span class="hidden md:block"><ThemeIcon /></span>

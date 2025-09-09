@@ -1,0 +1,71 @@
+# Manuel Thomsen - Strategic AI Implementation Specialist
+
+> A modern, high-performance portfolio website showcasing strategic AI implementation expertise and creative production capabilities. This site demonstrates how AI can amplify human creativity while maintaining enterprise-level quality and performance.
+
+## About Manuel Thomsen
+
+Manuel Thomsen is a Strategic AI Implementation Specialist who transforms creative production constraints into competitive advantages. He specializes in bridging AI capability with creative strategy, helping teams amplify their creative potential at enterprise scale.
+
+**Core Expertise:**
+- Strategic AI implementation and integration
+- Creative production transformation
+- Enterprise-level performance optimization
+- Cross-platform compatibility and testing
+
+## Key Sections
+
+### Portfolio & Work
+- [Homepage](/): Main portfolio showcase with hero section and key projects
+- [About](/about/): Detailed background, expertise, and professional approach
+- [Gallery](/gallery/): Visual showcase of creative work and AI implementations
+
+### Content & Knowledge
+- [Blog](/blog/): Strategic insights on AI implementation, creative production, and industry trends
+- [Courses](/courses/): Educational content on AI tools and creative workflows
+- [RSS Feed](/rss.xml): Subscribe to blog updates and new content
+
+## Featured Blog Posts
+
+- [100x Rubber Duck](/blog/100x-rubber-duck/): Scaling creative processes with AI
+- [A World of Rules](/blog/a-world-of-rules/): Understanding AI system constraints
+- [ElevenLabs Alchemy](/blog/elevenlabs-alchemy/): Advanced audio generation techniques
+- [Local Revolution](/blog/local-revolution/): On-device AI processing benefits
+- [Rubber Duck Cline](/blog/rubber-duck-cline/): AI-assisted development workflows
+- [Structured Prompts](/blog/structured-prompts/): Effective AI prompt engineering
+- [World of Markdown](/blog/world-of-markdown/): Content creation and management
+
+## Course Offerings
+
+- [AI for Creative Professionals](/courses/ai-for-creative-professionals/): Comprehensive AI implementation guide
+- [ComfyUI WebApp](/courses/comfy-ui-webapp/): Building AI-powered web applications
+- [Cursor Rules](/courses/cursor-rules/): Development workflow optimization
+- [ElevenLabs 101](/courses/elevenlabs-101/): Audio generation fundamentals
+- [Synthesia 101](/courses/synthesia-101/): Video creation with AI
+
+## Technical Implementation
+
+**Tech Stack:**
+- Astro (Static Site Generator)
+- TypeScript (Type Safety)
+- Tailwind CSS (Styling)
+- Playwright (Testing)
+- Cloudflare Pages (Deployment)
+
+**Key Features:**
+- Performance optimized (Lighthouse scores 95+)
+- Cross-browser compatibility testing
+- Mobile-first responsive design
+- SEO optimized with automatic sitemaps
+- Accessibility compliant (WCAG 2.1 AA)
+
+## Contact & Collaboration
+
+For strategic AI implementation projects, creative production consulting, or collaboration opportunities, visit the contact section on the homepage or reach out through the provided contact methods.
+
+## Copyright & Usage
+
+© 2025 Manuel Thomsen. All content, designs, and implementations are proprietary. This site serves as a professional portfolio and knowledge base for strategic AI implementation expertise.
+
+---
+
+*This LLM.txt file provides AI models with structured access to the most relevant information about Manuel Thomsen's portfolio, expertise, and content. For the most current information, always refer to the live website.*

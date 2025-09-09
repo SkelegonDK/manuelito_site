@@ -1,0 +1,29 @@
+---
+/**
+ * ElevenlabsAudioNative.astro
+ * Astro wrapper for the Elevenlabs Audio Native React island.
+ *
+ * Usage:
+ * <ElevenlabsAudioNative publicUserId="..." ...otherProps />
+ */
+import ElevenlabsAudioNativeIsland from './ElevenlabsAudioNative.jsx';
+const {
+  publicUserId,
+  size,
+  textColorRgba,
+  backgroundColorRgba,
+  height,
+  width,
+  projectId
+} = Astro.props;
+---
+<ElevenlabsAudioNativeIsland
+  publicUserId={publicUserId}
+  size={size}
+  textColorRgba={textColorRgba}
+  backgroundColorRgba={backgroundColorRgba}
+  height={height}
+  width={width}
+  projectId={projectId}
+  client:load
+/> 

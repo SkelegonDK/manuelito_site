@@ -1,0 +1,56 @@
+---
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import { SITE_TITLE, SITE_DESCRIPTION } from "../../consts";
+import { getCollection } from "astro:content";
+import FormattedDate from "@/components/FormattedDate.astro";
+import { Picture } from 'astro:assets';
+import heroImage from "@/assets/to-think.png";
+const posts = (await getCollection("blog")).sort(
+  (a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf()
+);
+---
+
+<BaseLayout title="Blog" description="Thoughts on creativity, AI and code.">
+  <section class="flex  flex-col text-center gap-4 pt-16">
+    <h2 class="text-4xl px-6 ">Blog</h2>
+    <p class="text-liquirice dark:text-white text-2xl px-4">Thoughts on creativity, ai and code.</p>
+    <ul class="flex flex-wrap justify-center md:justify-start gap-8 py-20 md:px-0 px-6 list-none">
+      <li class="md:w-96 w-full group px-4 py-6 flex flex-col gap-6">
+        <Picture 
+        src={heroImage} 
+        alt="thinking man" 
+        class="w-full h-full object-cover" 
+        formats={["webp", "avif", "png"]}
+        widths={[384, 768, 1536]}
+        sizes="(max-width: 768px) 100vw, 384px"
+        loading="eager"
+        decoding="async"
+        />
+      </li>
+      {
+        posts.map((post) => {
+          return (
+            <li class="md:w-96 w-full text-left rounded-xl backdrop-blur-md dark:bg-liquirice/50 bg-bluey/50 group preload-trigger px-4 py-6 flex flex-col gap-6">
+              <a href={`/blog/${post.id}/`} class="flex flex-col gap-4">
+                <div class="text-4xl p-2 self-start transition">
+                  <p class="date -mt-4 text-sm font-light text-nintendbro dark:text-bluey">
+                  <FormattedDate date={post.data.pubDate} />
+                </p>
+                </div>
+                
+                <h4 class="text-lg text-liquirice dark:text-jabro">{post.data.title}</h4>
+                
+                <p class="text-liquirice dark:text-white">
+                  {post.data.description}
+                </p>
+              </a>
+            </li>
+          );
+        })
+      }
+      
+    </ul>
+    
+    
+  </section>
+</BaseLayout>

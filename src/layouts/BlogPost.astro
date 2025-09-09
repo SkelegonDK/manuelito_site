@@ -1,0 +1,145 @@
+---
+import type { CollectionEntry } from "astro:content";
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import FormattedDate from "@/components/FormattedDate.astro";
+import ElevenlabsAudioNative from "@/components/ElevenlabsAudioNative.astro";
+import { Picture } from "astro:assets";
+import type { ImageMetadata } from "astro";
+
+type Props = Omit<CollectionEntry<"blog">["data"], "icon"> & { heroImage: ImageMetadata };
+
+const {
+  title = "",
+  description,
+  pubDate,
+  updatedDate,
+  heroImage,
+} = Astro.props as Props;
+
+if (typeof heroImage !== "object" || heroImage === null) {
+  throw new Error("heroImage must be an imported image object (ImageMetadata) in BlogPost.astro");
+}
+
+import { getCollection } from "astro:content";
+const posts = (await getCollection("blog")).sort(
+  (a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf(),
+);
+const bgClasses = [
+  "bg-white/10 dark:bg-black/10 rounded-xl",
+  "bg-white/10 dark:bg-black/10 rounded-xl",
+  "bg-white/10 dark:bg-black/10 rounded-xl",
+  "bg-white/10 dark:bg-black/10 rounded-xl",
+];
+
+const getRandomClass = () => {
+  return bgClasses[Math.floor(Math.random() * bgClasses.length)];
+};
+---
+
+<BaseLayout title={title} description={description}>
+  <article>
+    <div
+      class="relative mb-20 backdrop-blur-md md:px-0 p-6"
+    >
+      <!-- Hero section with image and title -->
+      <div
+        class="dark:bg-liquirice/30 bg-bluey/30 h-96 w-full flex items-center justify-center rounded-xl overflow-hidden relative"
+      >
+        <!-- Hero image as background -->
+        <div class="absolute inset-0 z-0 opacity-30 blog-hero-image-container">
+          <Picture
+            src={heroImage}
+            alt={`Hero image for ${title}`}
+            class="w-full h-full object-cover"
+            formats={["webp", "avif", "png"]}
+            widths={[768, 1536, 1920]}
+            sizes="(max-width: 768px) 100vw, 50vw"
+            loading="eager"
+            decoding="async"
+          />
+        </div>
+        <!-- Title and description overlay -->
+        <div class="text-center px-6 z-10 relative">
+          <h1 class="text-4xl md:text-9xl text-liquirice dark:text-jabro mb-4">
+            {title}
+          </h1>
+          <p
+            class="text-liquirice dark:text-jabro text-xl md:text-2xl"
+            set:html={description}
+          />
+        </div>
+      </div>
+    </div>
+    <div class="p-6">
+      <ElevenlabsAudioNative
+        publicUserId="65396038ed4b03af12ea9ce96f127b3d988c43203de2caf4eaf0671a5fa17dfa"
+      />
+    </div>
+
+    <div class="px-6 md:px-0">
+      <div class="">
+        <div class="text-sm flex items-center justify-between">
+          <FormattedDate date={pubDate} />
+          {
+            updatedDate && (
+              <div class="last-updated-on backdrop-blur-md">
+                Last updated on <FormattedDate date={updatedDate} />
+              </div>
+            )
+          }
+        </div>
+
+        <hr />
+      </div>
+      <div class="flex justify-center py-12 md:flex-row flex-col w-full">
+        <div class="prose flex flex-col gap-6 dark:prose-invert w-full bg-bluey/20 dark:bg-liquirice/30 rounded-xl p-12 backdrop-blur-md">
+          <slot />
+        </div>
+      </div>
+    </div>
+  </article>
+</BaseLayout>
+
+<script>
+  // Ensure blog hero images are properly loaded
+  document.addEventListener("DOMContentLoaded", setupBlogHeroImages);
+  document.addEventListener("astro:page-load", setupBlogHeroImages);
+
+  function setupBlogHeroImages() {
+    const heroImageContainers = document.querySelectorAll(
+      ".blog-hero-image-container",
+    );
+
+    heroImageContainers.forEach((container) => {
+      const img = container.querySelector("img");
+      if (!img) return;
+
+      // Initially set opacity to 0
+      img.style.opacity = "0";
+
+      // When image is loaded, fade it in
+      if (img.complete) {
+        // Image is already loaded
+        setTimeout(() => {
+          img.style.opacity = "1";
+        }, 100);
+      } else {
+        // Wait for image to load
+        img.onload = () => {
+          img.style.opacity = "1";
+        };
+      }
+    });
+  }
+</script>
+
+<style>
+  /* Ensure default typography colors align with brand tokens via Tailwind classes above */
+
+  .icon-container {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+</style>

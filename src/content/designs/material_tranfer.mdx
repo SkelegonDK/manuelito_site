@@ -1,0 +1,49 @@
+---
+title: "Material Transfer"
+description: "Leverage structured data for precise control."
+date: 2025-08-18
+imagesRight: true
+images:
+  - src: "@/assets/coffehug_logo.png"
+    alt: "The Local Revolution cover artwork"
+  - src: "@/assets/coffehug_logo_3d.png"
+    alt: "Playful llama illustration"
+tech: ["ComfyUI", "Prompt Engineering", "Material Design", "3D Rendering"]
+---
+
+Using a JSON formatted prompt, can be a game changer in achieving very specific results. Some times even better than using a 3D model. 
+
+Ask anyone to render specific materials can be very taxing, in modern laptops. Here you can have a prompt with all the necessary values and variable a real 3D model would have. But now we will use image generation to simulate the material based on this logo.
+
+Saving me 3 whole steps. Modeling, adding materials and and lighting. Still renders, but much faster. This can be applied as a creative tool for graphic design, but also for products and material exploration.
+
+
+**Prompt:** <br/>
+"Generate an image of my logo based on this 3D material on a transparent background:"
+
+```json
+{
+  "style": "Hyper-realistic 3D Render",
+  "material": "frosted transparent crystal",
+  "color_palette": ["soft white", "rainbow light spectrum", "holographic highlights"],
+  "background": "Transparent alpha channel",
+  "object_properties": {
+    "finish": "smooth matte with glossy edges",
+    "lighting": "strong directional spotlight from multiple angles to create prism effects",
+    "transparency": "70%",
+    "surface_details": "sharp cuts and beveled edges with internal light scattering"
+  },
+  "shapes": ["mechanical nut", "technical forms", "geometric objects"],
+  "camera_angle": "macro close-up, slightly tilted for dramatic depth",
+  "resolution": "ultra-high, 8K preferred",
+  "shadows": "soft and colorful diffusion",
+  "details": {
+    "reflections": true,
+    "refraction": true,
+    "prismatic dispersion": true,
+    "subsurface scattering": true
+  }
+}
+```
+
+

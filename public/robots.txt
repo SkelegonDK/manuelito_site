@@ -1,0 +1,19 @@
+User-agent: *
+Allow: /
+
+# Disallow admin and API areas
+Disallow: /admin/
+Disallow: /api/
+
+# Allow important pages
+Allow: /
+Allow: /about/
+Allow: /blog/
+Allow: /courses/
+Allow: /gallery/
+
+# Sitemap location
+Sitemap: https://manuelito.tech/sitemap-index.xml
+
+# Crawl delay (optional - helps prevent overwhelming the server)
+Crawl-delay: 1

@@ -1,0 +1,15 @@
+---
+import { extractRouterConfig } from "@/utils/uploadthing-server-bridge";
+import { ourFileRouter } from "@/server/uploadthing";
+
+const routerConfig = extractRouterConfig(ourFileRouter);
+(globalThis as any).__UPLOADTHING ??= routerConfig;
+---
+
+<script define:vars={{ routerConfig }} is:inline>
+  // Inject to the client to avoid a fetch for router config
+  // @ts-ignore
+  globalThis.__UPLOADTHING ??= routerConfig;
+</script>
+
+

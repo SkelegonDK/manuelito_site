@@ -1,0 +1,103 @@
+---
+import NavLinkPreloader from "./NavLinkPreloader.astro";
+import BlogImagePreloader from "./BlogImagePreloader.astro";
+import DesktopNav from "./DesktopNav.astro";
+import MobileNav from "./MobileNav.astro";
+import { Picture } from "astro:assets";
+import favicon from "../assets/coffehug_logo.png";
+
+// Get the current page path to display the title
+const pathname = Astro.url.pathname;
+let pageTitle = "Home";
+
+// Split pathname into segments and get the first non-empty segment
+const pathSegments = pathname.split("/").filter(Boolean);
+const firstSegment = pathSegments.length > 0 ? pathSegments[0] : "";
+
+// Set the page title based on the current path using segment-based matching
+if (pathname.includes("index") || pathname === "/" || pathname === "") {
+  pageTitle = "Home";
+} else if (pathname.includes("about")) {
+  pageTitle = "About Me";
+} else if (pathname.includes("blog")) {
+  pageTitle = "Blog";
+} else if (firstSegment === "courses") {
+  pageTitle = "Courses";
+} else if (firstSegment === "gallery") {
+  pageTitle = "Gallery";
+} else {
+  // Extract the last part of the path for other pages
+  const pathParts = pathname.split("/").filter(Boolean);
+  if (pathParts.length > 0) {
+    pageTitle = pathParts[pathParts.length - 1]
+      .split("-")
+      .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+      .join(" ");
+  }
+}
+---
+
+<header class="pb-20">
+  <nav
+    class="z-[1000] flex fixed top-0 left-0 right-0 backdrop-blur-md bg-bluey/30 dark:bg-black/30 w-full px-4 py-3 items-center border-b border-black/20 dark:border-white/20 justify-between mobile-header"
+    id="mobile-header"
+  >
+  
+    <a class="flex items-center gap-2" href="/">
+      
+      <Picture 
+        src={favicon}
+        alt="Manuelito.tech"
+        class="w-12 h-12"
+        widths={[64, 128, 256]}
+        loading="lazy"
+        formats={["webp", "avif", "png"]}
+      />
+      <p class="pt-1 md:text-lg  flex text-liquirice dark:text-white">
+        <span class="hidden md:block">manuelito.tech</span>
+        <!-- Mobile page title - only visible when menu is closed -->
+        <span class="md:hidden mobile-page-title text-base xl:text-xl">{pageTitle}</span>
+      </p>
+    </a>
+    <DesktopNav />
+    <MobileNav pageTitle={pageTitle} />
+  </nav>
+  
+  <!-- Hidden preloaders for each page -->
+  <div class="hidden">
+    <NavLinkPreloader path="/" />
+    <NavLinkPreloader path="/about" />
+    <NavLinkPreloader path="/blog" />
+    <NavLinkPreloader path="/courses" />
+    <BlogImagePreloader />
+  </div>
+</header>
+
+<style>
+  /* Mobile header styles */
+  .mobile-header {
+    transition: all 0.5s ease-in-out;
+  }
+  
+  /* When menu is open, make header more prominent */
+  .mobile-header.menu-open {
+    background-color: rgba(255, 255, 255, 0.8);
+  }
+  
+  :global(.dark) .mobile-header.menu-open {
+    background-color: rgba(0, 0, 0, 0.8);
+  }
+  
+  /* Mobile page title styles */
+  .mobile-page-title {
+    font-weight: 600;
+    transition: opacity 0.3s ease;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+  
+  .menu-open .mobile-page-title {
+    opacity: 0;
+    pointer-events: none;
+  }
+</style>

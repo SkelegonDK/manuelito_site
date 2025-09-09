@@ -1,0 +1,59 @@
+---
+import { getCollection, type CollectionEntry } from 'astro:content';
+import { Picture } from 'astro:assets';
+import type { ImageMetadata } from 'astro';
+import BaseLayout from '@/layouts/BaseLayout.astro';
+ 
+type DesignEntry = CollectionEntry<'designs'>;
+
+const designs = await getCollection('designs');
+const rendered = await Promise.all(
+  designs.map(async (entry) => ({ entry, Content: (await entry.render()).Content }))
+);
+---
+
+<BaseLayout title="Gallery" description="Selected digital design explorations and systems.">
+  <section class="max-w-6xl mx-auto py-16 px-4">
+    <h1 class="text-6xl text-center mb-12 text-liquirice dark:text-jabro">Gallery</h1>
+    <p class="text-center text-lg mb-12 text-liquirice dark:text-white">Explorations in AI and design.</p>
+    
+
+    <div class="space-y-20">
+      {rendered.map(({ entry, Content }, index) => {
+        const imagesOnRight = entry.data.imagesRight ?? (index % 2 !== 0);
+        return (
+          <article class="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+            <div class:list={["flex flex-col gap-4 order-1", imagesOnRight && "md:order-2"]}>
+              {entry.data.images.map((img, i) => (
+                <Picture
+                  src={img.src}
+                  alt={img.alt}
+                  class="w-full h-auto rounded-xl object-cover"
+                  formats={["webp", "avif", "png", "jpeg"]}
+                  widths={[320, 640, 960,]}
+                  sizes="(max-width: 768px) 100vw, 50vw"
+                  loading={index === 0 && i === 0 ? "eager" : "lazy"}
+                  decoding="async"
+                  fetchpriority={index === 0 && i === 0 ? "high" : "auto"}
+                />
+              ))}
+            </div>
+            <div class:list={["prose prose-lg dark:prose-invert bg-white/50 dark:bg-black/40 backdrop-blur-sm p-6 rounded-xl order-2", imagesOnRight && "md:order-1"]}>
+              <h2 class="!mt-0">{entry.data.title}</h2>
+              <div class="flex flex-wrap gap-2 mb-4">
+                {(entry.data.tech ?? []).map((techItem) => (
+                  <span class="px-2 py-1 bg-bluey dark:bg-bluey/50 rounded-md text-sm text-liquirice dark:text-jabro">
+                    {techItem}
+                  </span>
+                ))}
+              </div>
+              {entry.data.description && <p class="text-base opacity-80">{entry.data.description}</p>}
+              <Content />
+            </div>
+          </article>
+        );
+      })}
+    </div>
+  </section>
+</BaseLayout>
+

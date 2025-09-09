@@ -1,0 +1,80 @@
+---
+import "../styles/hamburgers.css";
+
+interface Props {
+  isActive?: boolean;
+  id?: string;
+}
+
+const { isActive = false, id = "hamburger-button" } = Astro.props;
+---
+
+<button 
+  id={id}
+  data-testid="mobile-hamburger"
+  class:list={["hamburger hamburger--elastic", { "is-active": isActive }]} 
+  type="button" 
+  aria-label="Toggle mobile menu"
+  aria-expanded={isActive}
+  aria-controls="mobile-navigation"
+  style="position: relative; z-index: 4000; pointer-events: auto; cursor: pointer;"
+>
+  <span class="hamburger-box">
+    <span class="hamburger-inner dark:bg-white"></span>
+  </span>
+</button>
+
+<style>
+  /* Ensure hamburger menu works in dark mode */
+  :global(.dark) .hamburger-inner,
+  :global(.dark) .hamburger-inner::before,
+  :global(.dark) .hamburger-inner::after {
+    background-color: white;
+  }
+  
+  /* Ensure hamburger button remains visible and clickable */
+  .hamburger {
+    opacity: 1 !important;
+    pointer-events: auto !important;
+    cursor: pointer !important;
+    position: relative !important;
+    z-index: 4000 !important;
+    background: transparent !important;
+    border: none !important;
+    padding: 15px !important;
+    display: inline-block !important;
+  }
+  
+  .hamburger:hover {
+    opacity: 1 !important;
+  }
+  
+  .hamburger.is-active:hover {
+    opacity: 1 !important;
+  }
+  
+  /* Focus styles for accessibility */
+  .hamburger:focus {
+    outline-offset: 2px;
+    border-radius: 4px;
+  }
+  
+  /* Ensure the button is always clickable */
+  .hamburger * {
+    pointer-events: none;
+  }
+  
+  /* Override any backdrop-blur interference and ensure proper stacking */
+  .hamburger {
+    isolation: isolate;
+    transform: translateZ(0);
+    /* Force new stacking context */
+    will-change: transform;
+  }
+  
+  /* Ensure button container has highest z-index */
+  .hamburger {
+    position: relative !important;
+    z-index: 4000 !important;
+  }
+</style> 

@@ -1,0 +1,231 @@
+---
+// Import any necessary components or utilities
+import { Icon } from "astro-icon/components";
+import { Picture } from "astro:assets";
+import heroImage from "@/assets/manuel.png";
+import ContactButton from './ContactButton.astro';
+---
+
+<section class="about-grid py-12 px-6">
+  <!-- Personal photo/avatar section -->
+  <div class="photo-area flex justify-end items-start transition-transform duration-300 hover-bounce">
+    <div class="w-auto h-auto md:h-full md:w-full rounded-xl overflow-hidden backdrop-blur-md bg-bluey/50 dark:bg-bluey/50 image-container">
+      <Picture
+        src={heroImage} 
+        alt="Manuel Thomsen" 
+        loading="eager" 
+        class="w-full h-full object-cover"
+        formats={["webp", "avif", "png", "jpeg"]}
+        widths={[640, 960, 1280]}
+        sizes="(max-width: 768px) 100vw, 50vw"
+        loading="eager"
+        decoding="async"
+      />
+      
+    </div>
+    
+  </div>
+  
+  <!-- Personal bio section -->
+  <div class="bio-area grid grid-cols-1 gap-4 bg-white/30 dark:bg-black/30 backdrop-blur-md rounded-xl p-6">
+    <h2 class="text-6xl text-liquirice dark:text-jabro mb-4">Bio</h2>
+    <p class="text-liquirice dark:text-white">
+      I'm an accomplished <strong>Creative Technologist & Digital Designer</strong> specializing in creative production, synthetic voice-over and generative AI. 
+      My expertise spans content automation, AI workflows, and advanced technologies like AI-generated voiceover, 
+      synthetic video, prompt engineering, and image generation.
+    <br>
+    <br>
+      With a proven track record working with <strong>fortune 500 companies</strong>, I push for innovative solutions and creative excellence.
+      My unique blend of technical expertise and creative insight allows me to not only implement cutting-edge AI solutions but also ensure they align perfectly with any brand's voice and campaign goals.
+    </p>
+  </div>
+  
+  <!-- Core competencies -->
+  <div class="competencies-area bg-white/30 dark:bg-black/30 backdrop-blur-md rounded-xl">
+    <div class="p-6">
+      <h4 class="text-xl text-liquirice dark:text-jabro font-medium mb-4">Core Competencies:</h4>
+      <ul class="grid grid-cols-1 dark:text-gray-200">
+        <li class="flex gap-2">
+          <span><strong>Digital Design:</strong> Creating thousands of emails, animated banners, and video assets for fortune 500 clients.</span>
+        </li>
+        <br>
+        <li class="flex gap-2">
+          <span><strong>AI-Powered Content Automation:</strong> Expertise in creating automated workflows for voice, video, and image generation, turning concepts into assets in a fraction of the time.</span>
+        </li>
+        <br>
+        <li class="flex gap-2">
+          <span><strong>Synthetic Media Strategy:</strong> Guiding the production of AI-generated voiceovers and synthetic videos (ElevenLabs, Synthesia, Heygen) for global campaigns.</span>
+        </li>
+        <br>
+        <li class="flex gap-2">
+          <span><strong>Custom AI Voice Design:</strong> Managing the end-to-end process of creating unique, high-quality voice clones that embody your brand's identity.</span>
+        </li>
+        <br>
+        <li class="flex gap-2">
+          <span><strong>Full-Stack Development:</strong> Building the digital products and web infrastructure (using Astro, Python, etc.) required to support and deliver these innovative solutions.</span>
+        </li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- Languages -->
+  <div class="languages-area bg-white/30 dark:bg-black/30 backdrop-blur-md rounded-xl">
+    <div class="p-6">
+      <h4 class="text-xl text-liquirice dark:text-jabro font-medium mb-4">Languages:</h4>
+      <ul class="grid grid-cols-1 gap-2 dark:text-gray-200 list-none">
+        <li>Danish (Native)</li>
+        <li>English (Bilingual)</li>
+        <li>Italian (Bilingual)</li>
+        <li>Spanish (Native)</li>
+      </ul>
+    </div>
+  </div>
+<!-- Tech Stack -->
+<div class="tech-area bg-white/30 dark:bg-black/30 backdrop-blur-md rounded-xl">
+  <div class="p-6">
+    <h4 class="text-xl text-liquirice dark:text-jabro font-medium mb-4">Toolbelt:</h4>
+    <div class="flex flex-wrap gap-2 text-liquirice dark:text-jabro">
+      <span class="px-2 py-1 bg-bluey dark:bg-liquirice rounded-md text-sm">Cursor</span>
+      <span class="px-2 py-1 bg-bluey dark:bg-liquirice rounded-md text-sm">Figma</span>
+      <span class="px-2 py-1 bg-bluey dark:bg-liquirice rounded-md text-sm">Astro</span>
+      <span class="px-2 py-1 bg-bluey dark:bg-liquirice rounded-md text-sm">Python</span>
+      <span class="px-2 py-1 bg-bluey dark:bg-liquirice rounded-md text-sm">React</span>
+      <span class="px-2 py-1 bg-bluey dark:bg-liquirice rounded-md text-sm">Next.js</span>
+      <span class="px-2 py-1 bg-bluey dark:bg-liquirice rounded-md text-sm">Tailwind CSS</span>
+      <span class="px-2 py-1 bg-bluey dark:bg-liquirice rounded-md text-sm">HTML</span>
+      <span class="px-2 py-1 bg-bluey dark:bg-liquirice rounded-md text-sm">CSS</span>
+      <span class="px-2 py-1 bg-bluey dark:bg-liquirice rounded-md text-sm">Mac OS</span>
+      
+      
+      <span class="px-2 py-1 bg-white text-black dark:bg-white rounded-md text-sm">ElevenLabs</span>
+      <span class="px-2 py-1 bg-white text-black dark:bg-white rounded-md text-sm">Synthesia</span>
+      <span class="px-2 py-1 bg-white text-black dark:bg-white rounded-md text-sm">Heygen</span>
+      
+      <span class="px-2 py-1 bg-liquirice text-white dark:bg-nintendbro rounded-md text-sm">Blender</span>
+      <span class="px-2 py-1 bg-liquirice text-white dark:bg-nintendbro rounded-md text-sm">Adobe After Effects</span>
+      <span class="px-2 py-1 bg-liquirice text-white dark:bg-nintendbro rounded-md text-sm">Adobe Photoshop</span>
+      <span class="px-2 py-1 bg-liquirice text-white dark:bg-nintendbro rounded-md text-sm">Adobe Audition</span>
+
+      <span class="px-2 py-1 bg-jabro dark:text-liquirice dark:bg-jabro rounded-md text-sm">Ollama</span>
+      <span class="px-2 py-1 bg-jabro dark:text-liquirice dark:bg-jabro rounded-md text-sm">CrewAI</span>
+      <span class="px-2 py-1 bg-jabro dark:text-liquirice dark:bg-jabro rounded-md text-sm">Perplexity</span>
+      <span class="px-2 py-1 bg-jabro dark:text-liquirice dark:bg-jabro rounded-md text-sm">Claude</span>
+      <span class="px-2 py-1 bg-jabro dark:text-liquirice dark:bg-jabro rounded-md text-sm">ChatGPT</span>
+      <span class="px-2 py-1 bg-jabro dark:text-liquirice dark:bg-jabro rounded-md text-sm">ComfyUI</span>
+      
+    </div>
+  </div>
+</div>
+
+  <!-- Contact information -->
+<div class="contact-area bg-white/30 dark:bg-black/30 backdrop-blur-md rounded-xl">
+    <div class="p-6">
+      <h4 class="text-xl text-liquirice dark:text-jabro font-medium mb-4">Find me in:</h4>
+      <ul class="p-0 grid grid-cols-1 gap-3 text-liquirice dark:text-white">
+        <li class="flex items-center gap-2">
+          <Icon name="fa6-solid:map-location-dot" class="text-primary" /> Copenhagen, Denmark
+        </li>
+        <li class="flex items-center gap-2">
+          <Icon name="fa:globe" class="text-primary" /> manuelito.tech
+        </li>
+        <li class="flex items-center gap-2">
+          <Icon name="fa:linkedin" class="text-primary" />
+          <a href="https://linkedin.com/in/manuel-thomsen/" target="_blank">linkedin.com/in/manuel-thomsen</a>
+        </li>
+      </ul>
+    </div>
+    
+    <!-- Call to Action -->
+   <div class="py-8 text-center">
+    <p class="mb-4 text-liquirice dark:text-white">
+      Interested in working together?
+      <br>
+      Let's discuss your project!
+    </p>
+    <ContactButton />
+  </div>
+  
+  
+  
+</section>
+
+<style>
+  /* Main grid layout - Mobile first approach */
+  .about-grid {
+    display: grid;
+    width: 100%;
+    max-width: none;
+    gap: 2rem;
+    grid-template-columns: 1fr;
+    grid-template-areas:
+      "photo"
+      "bio"
+      "competencies"
+      "languages"
+      "tech"
+      "contact";
+  }
+
+  /* Tablet layout */
+  @media (min-width: 768px) {
+    .about-grid {
+      grid-template-columns: repeat(12, 1fr);
+      grid-template-areas:
+        "photo photo photo bio bio bio bio bio bio bio . ."
+        "photo photo photo competencies competencies competencies competencies competencies languages languages languages languages"
+        "tech tech tech tech tech tech tech tech contact contact contact contact"
+        ". . . . . . . . . . . .";
+    }
+  }
+
+  /* Assign grid areas */
+  .photo-area { grid-area: photo; }
+  .bio-area { grid-area: bio; }
+  .contact-area { grid-area: contact; }
+  .competencies-area { grid-area: competencies; }
+  .languages-area { grid-area: languages; }
+  .tech-area { grid-area: tech; }
+  .experience-area { grid-area: experience; }
+  .approach-area { grid-area: approach; }
+
+  /* Ensure smooth transitions between light and dark modes */
+  section {
+    transition: color 0.3s ease, background-color 0.3s ease;
+  }
+  
+  a {
+    transition: color 0.3s ease, background-color 0.3s ease;
+  }
+  
+  /* Add some subtle hover effects */
+  .bg-white\/10:hover, .bg-black\/10:hover {
+    transform: translateY(-2px);
+    transition: transform 0.2s ease;
+  }
+
+  /* Image hover animation */
+  .image-container {
+    position: relative;
+    overflow: hidden;
+    transition: all 0.3s ease;
+  }
+
+  .image-container:hover .hover-bounce {
+    animation: bounce-up 0.5s ease;
+  }
+
+  @keyframes bounce-up {
+    0% {
+      transform: translateY(0);
+    }
+    50% {
+      transform: translateY(-15px);
+    }
+    75% {
+      transform: translateY(-5px);
+    }
+    100% {
+      transform: translateY(0);
+    }
+  }
+</style>

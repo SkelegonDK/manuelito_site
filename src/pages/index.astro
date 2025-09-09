@@ -1,0 +1,19 @@
+---
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import { SITE_TITLE, SITE_DESCRIPTION } from "../consts";
+import Hero from "@/components/Hero.astro";
+
+const images = import.meta.glob<{ default: ImageMetadata }>(
+  "/src/assets/*.{jpeg,jpg,png,gif}",
+);
+---
+
+<BaseLayout 
+  title={SITE_TITLE} 
+  description={SITE_DESCRIPTION} 
+  mainClasses="pt-18"
+>
+  <Hero id="hero" />
+  
+  
+</BaseLayout>

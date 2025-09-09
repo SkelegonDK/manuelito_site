@@ -1,0 +1,89 @@
+{
+  "name": "manuel-thomsen-portfolio",
+  "description": "Manuel Thomsen's Personal Website",
+  "version": "1.0.0",
+  "type": "module",
+  "author": {
+    "name": "Manuel Thomsen",
+    "email": "manuel@manuelito.tech",
+    "url": "https://manuelito.tech"
+  },
+  "license": "MIT",
+  "homepage": "https://manuelito.tech",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/SkelegonDK/manuelito.git"
+  },
+  "bugs": {
+    "url": "https://github.com/SkelegonDK/manuelito/issues"
+  },
+  "keywords": [
+    "portfolio",
+    "astro",
+    "typescript",
+    "tailwindcss",
+    "playwright",
+    "ai-implementation",
+    "creative-production",
+    "performance",
+    "accessibility"
+  ],
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview",
+    "astro": "astro",
+    "test": "playwright test",
+    "test:smoke": "playwright test src/tests/smoke.spec.ts",
+    "test:ui": "playwright test --ui",
+    "test:headed": "playwright test --headed",
+    "test:debug": "playwright test --debug",
+    "test:install": "playwright install",
+    "test:mobile": "playwright test src/tests/mobile-*.spec.ts",
+    "test:navigation": "playwright test src/tests/navigation-*.spec.ts",
+    "test:perf": "playwright test src/tests/*performance*.spec.ts",
+    "lint": "astro check",
+    "lint:fix": "astro check --fix",
+    "type-check": "astro check --types",
+    "optimize:video": "node scripts/optimize-video.js",
+    "optimize:video:webm": "node scripts/optimize-video.js --webm",
+    "check-optimization": "node scripts/check-optimization.js",
+    "format": "prettier --write .",
+    "format:check": "prettier --check ."
+  },
+  "dependencies": {
+    "@astrojs/check": "^0.9.4",
+    "@astrojs/mdx": "4.3.0",
+    "@astrojs/react": "4.3.0",
+    "@astrojs/rss": "^4.0.12",
+    "@astrojs/sitemap": "^3.4.1",
+    "@astrojs/tailwind": "^6.0.2",
+    "@iconify-json/bi": "^1.2.4",
+    "@iconify-json/fa": "^1.2.1",
+    "@iconify-json/fa6-brands": "^1.2.5",
+    "@iconify-json/fa6-regular": "^1.2.3",
+    "@iconify-json/fa6-solid": "^1.2.3",
+    "@iconify/json": "^2.2.350",
+    "@sendgrid/mail": "^8.1.5",
+    "@tailwindcss/vite": "^4.1.10",
+    "@types/uuid": "^10.0.0",
+    "@uploadthing/react": "^7.3.2",
+    "astro": "^5.10.2",
+    "astro-icon": "^1.1.5",
+    "hamburgers": "^1.2.1",
+    "motion": "^12.18.1",
+    "node": "^20.19.5",
+    "react": "^19.1.0",
+    "react-dom": "^19.1.0",
+    "react-icons": "^5.5.0",
+    "sharp": "^0.33.5",
+    "tailwindcss": "^3.4.17",
+    "typescript": "^5.8.3",
+    "uuid": "^11.1.0"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.54.2",
+    "@tailwindcss/typography": "^0.5.16",
+    "sass-embedded": "^1.89.2"
+  }
+}

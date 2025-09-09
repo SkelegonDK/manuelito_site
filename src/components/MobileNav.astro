@@ -1,0 +1,143 @@
+---
+import HamburgerButton from "./HamburgerButton.astro";
+
+interface Props {
+  pageTitle: string;
+}
+
+const { pageTitle } = Astro.props;
+---
+
+<div class="md:hidden relative z-[4000] pointer-events-auto">
+  <HamburgerButton id="mobile-hamburger" />
+</div>
+
+<script>
+  // Progressive Loading Mobile Navigation - Breaking dependency chain
+  import type { MobileNavigation, MobileNavigationConfig } from '../utils/mobile-navigation.js';
+  
+  // Global mobile navigation instance
+  let mobileNav: MobileNavigation | null = null;
+  
+  /**
+   * Initialize mobile navigation with progressive loading
+   */
+  async function initMobileNav(): Promise<void> {
+    try {
+      // Cleanup existing instance
+      if (mobileNav) {
+        mobileNav.cleanup();
+        mobileNav = null;
+      }
+      
+      // Only load mobile navigation on mobile viewports to reduce bundle size
+      const isMobile = window.innerWidth < 768;
+      if (!isMobile) {
+        return; // Skip initialization on desktop
+      }
+      
+      // Phase 1: Load mobile navigation when needed (non-blocking)
+      if ('requestIdleCallback' in window) {
+        requestIdleCallback(async () => {
+          await loadMobileNavigation();
+        }, { timeout: 1500 });
+      } else {
+        // Fallback for older browsers
+        setTimeout(async () => {
+          await loadMobileNavigation();
+        }, 500);
+      }
+    } catch (error) {
+      console.error("Failed to initialize mobile navigation:", error);
+    }
+  }
+  
+  /**
+   * Load mobile navigation utility (separated for better error handling)
+   */
+  async function loadMobileNavigation(): Promise<void> {
+    try {
+      // Dynamic import for tree-shaking and lazy loading
+      const { MobileNavigation, defaultMobileNavigationConfig } = await import('../utils/mobile-navigation.js');
+      
+      // Initialize with default configuration
+      const config: MobileNavigationConfig = {
+        ...defaultMobileNavigationConfig,
+        // Override any specific settings if needed
+      };
+      
+      mobileNav = new MobileNavigation(config);
+      
+      // Expose for testing and debugging
+      (window as any).mobileNav = mobileNav;
+      
+      console.debug('Mobile navigation loaded and initialized');
+    } catch (error) {
+      console.error("Failed to create mobile navigation instance:", error);
+    }
+  }
+  
+  /**
+   * Handle viewport changes for responsive behavior
+   */
+  function handleViewportChange(): void {
+    const isMobile = window.innerWidth < 768;
+    
+    if (isMobile && !mobileNav) {
+      // Initialize mobile nav if we're now on mobile and don't have it
+      initMobileNav();
+    } else if (!isMobile && mobileNav) {
+      // Clean up mobile nav if we're now on desktop
+      mobileNav.cleanup();
+      mobileNav = null;
+      delete (window as any).mobileNav;
+    }
+  }
+  
+  // Initialize on page load and after Astro page transitions
+  document.addEventListener("DOMContentLoaded", initMobileNav);
+  document.addEventListener("astro:after-swap", initMobileNav);
+  
+  // Handle viewport changes (optional - for responsive behavior)
+  let resizeTimeout: number;
+  window.addEventListener("resize", () => {
+    clearTimeout(resizeTimeout);
+    resizeTimeout = window.setTimeout(handleViewportChange, 150);
+  });
+</script>
+
+<style>
+  /* Mobile header styles */
+  .mobile-header {
+    transition: all 0.5s ease-in-out;
+  }
+  
+  /* When menu is open, make header more prominent */
+  .mobile-header.menu-open {
+    background-color: rgba(255, 255, 255, 0.8);
+  }
+  
+  :global(.dark) .mobile-header.menu-open {
+    background-color: rgba(0, 0, 0, 0.8);
+  }
+  
+  /* Mobile page title styles */
+  .mobile-page-title {
+    font-weight: 600;
+    transition: opacity 0.1s ease;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+  
+  .menu-open .mobile-page-title {
+    opacity: 0;
+    pointer-events: none;
+  }
+  
+  /* Ensure hamburger container is clickable */
+  .md\\:hidden {
+    position: relative !important;
+    z-index: 4000 !important;
+    pointer-events: auto !important;
+  }
+</style>

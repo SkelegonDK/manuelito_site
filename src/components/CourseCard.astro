@@ -1,0 +1,84 @@
+---
+import { Picture } from "astro:assets";
+import type { ImageMetadata } from 'astro';
+
+interface Media {
+  type: 'image' | 'video';
+  src: ImageMetadata;
+  alt?: string;
+  poster?: string;
+}
+
+interface Course {
+  title: string;
+  description: string;
+  gallery: Media[];
+  language?: string;
+}
+
+// Accepts course object, slug for detail page, and index for key
+const { course, slug, index } = Astro.props as { course: Course; slug: string; index: number };
+---
+
+  <div class="course-card bg-white/30 dark:bg-liquirice/50 backdrop-blur-md rounded-xl p-4 md:p-6 shadow-lg grid gap-4 relative h-full transition hover:scale-[1.02]">
+    <div class="course-content flex flex-col gap-3 justify-start">
+      <div class="flex items-start gap-2">
+        <h3 class="text-xl xl:text-3xl  text-liquirice dark:text-jabro">{course.title}</h3>
+      </div>
+      <p class="text-liquirice dark:text-white text-md">{course.description}</p>
+      {course.language && (
+        <span class="text-sm text-nintendbro dark:text-bluey">
+          Language: {course.language}
+        </span>
+      )}
+      <a href={slug} class="block h-full hover:cursor-pointer rounded-xl">
+      <span class="mt-4 inline-block px-6 py-2 bg-bluey dark:bg-jabro dark:hover:bg-white dark:hover:text-black hover:bg-jabro text-liquirice dark:text-liquirice hover:text-black rounded-md shadow transition-colors duration-200 text-center w-max">More Info</span>
+      </a>
+    </div>
+    {course.gallery && course.gallery.length > 0 && (
+      <div class="course-gallery flex flex-wrap gap-2 items-center justify-center w-full h-full">
+        {course.gallery.map((media) => (
+          <Picture 
+            src={media.src} 
+            alt={media.alt || course.title} 
+            class="w-full h-full object-cover rounded-md"
+            widths={[200, 400, 600]} 
+            loading="lazy" 
+            formats={["webp", "avif", "png", "jpeg"]}
+            
+          />
+        ))}
+      </div>
+    )}
+  </div>
+
+
+<style>
+  .course-card {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    position: relative;
+    height: 100%;
+  }
+  .course-content {
+    flex-grow: 1;
+  }
+  .course-gallery img {
+    max-height: 200px;
+    width: 100%;
+    object-fit: cover;
+  }
+  /* Responsive adjustments */
+  @media (min-width: 768px) {
+    .course-card {
+      flex-direction: row;
+      align-items: flex-start;
+      gap: 1.5rem;
+    }
+    .course-gallery {
+      flex-shrink: 0;
+      width: 50%;
+    }
+  }
+</style> 

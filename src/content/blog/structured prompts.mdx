@@ -1,0 +1,117 @@
+---
+title: 'Structured Prompts'
+description: 'AI image generation with structured prompts'
+icon: "🎨"
+pubDate: '2025-06-04'
+heroImage: "/src/assets/Material Transfer.jpeg"
+tags: ['AI Image Generation', 'Structured Prompts', 'OpenAI', 'DALL-E', 'Midjourney', 'Stable Diffusion']
+---
+
+# The Power of Structured Prompts
+
+A new wave of AI image generators is here, boasting impressive understanding and fewer artifacts. This is great, but let's be honest: balancing the detail you *can* provide with the detail the AI *needs* for predictable results remains a challenge. You want consistency, not a lottery.
+
+## Your Prompt's Blueprint
+What's the solution? **Structured input.** This isn't complex; it's just data. \
+Think **JSON**, **YAML**, **XML**, or even **Markdown**. By using data structures, you give your prompts a clear, unambiguous context, leading directly to more predictable and consistent image generation. \ \
+This is about taking control of the chaos. Instead of vague prose, you're providing a precise blueprint.
+Consider this OpenAI Image-1 prompt example for a logo in a specific 3D material:
+
+> Generate an image of this logo based on this 3D material on a transparent background:
+```json
+{
+  "style": "Hyper-realistic 3D Render",
+  "material": "frosted transparent crystal",
+  "color_palette": ["soft white", "rainbow light spectrum", "holographic highlights"],
+  "background": "Transparent alpha channel",
+  "object_properties": {
+    "finish": "smooth matte with glossy edges",
+    "lighting": "strong directional spotlight from multiple angles to create prism effects",
+    "transparency": "70%",
+    "surface_details": "sharp cuts and beveled edges with internal light scattering"
+  },
+  "shapes": ["mechanical nut", "technical forms", "geometric objects"],
+  "camera_angle": "macro close-up, slightly tilted for dramatic depth",
+  "resolution": "ultra-high, 8K preferred",
+  "shadows": "soft and colorful diffusion",
+  "details": {
+    "reflections": true,
+    "refraction": true,
+    "prismatic dispersion": true,
+    "subsurface scattering": true
+  }
+}
+```
+
+## Results
+
+| Original | AI Render |
+| --- | --- |
+| ![Original](../../assets/coffehug_logo.png) | ![AI Render](../../assets/coffehug_logo_3d.png) |
+
+---
+## Here's the template:
+> Generate an image of my logo based on this 3D material on a transparent background:
+
+```json
+{
+  "style": "$STYLE$",
+  "material": "$MATERIAL$",
+  "color_palette": ["$COLOR_1$", "$COLOR_2$", "$COLOR_3$"],
+  "background": "$BACKGROUND_DESCRIPTION$",
+  "object_properties": {
+    "finish": "$FINISH$",
+    "lighting": "$LIGHTING_DESCRIPTION$",
+    "transparency": "$TRANSPARENCY_PERCENTAGE$",
+    "surface_details": "$SURFACE_DETAILS$"
+  },
+  "shapes": ["$SHAPE_1$", "$SHAPE_2$", "$SHAPE_3$"],
+  "camera_angle": "$CAMERA_ANGLE$",
+  "resolution": "$RESOLUTION$",
+  "shadows": "$SHADOWS_DESCRIPTION$",
+  "details": {
+    "reflections": "$REFLECTIONS_BOOLEAN$",
+    "refraction": "$REFRACTION_BOOLEAN$",
+    "prismatic dispersion": "$PRISMATIC_DISPERSION_BOOLEAN$",
+    "subsurface scattering": "$SUBSURFACE_SCATTERING_BOOLEAN$"
+  }
+}
+```
+
+## The Template for Consistency
+This approach isn't just for one-off use. It's a template. You can fill in the values yourself if you have a clear vision, or, even better, describe the material to an LLM and have *it* populate the data structure. This is how you scale consistency.
+
+## For storytelling:
+> Generate a high-detail image depicting the following scene, based on a cinematic script breakdown:
+
+```json
+{
+  "scene_overview": "Theodore shares an intimate, playful \"date\" with Samantha on a serene beach. It captures their unique, surreal connection amidst natural beauty.",
+  "location": "A vast, uncrowded beach with soft, warm sand leading to a calm ocean. The distant horizon is hazy, blurring sea and sky into an expansive, ethereal backdrop.",
+  "time_of_day_lighting": "Late afternoon, transitioning into the golden hour. Lighting is soft, diffused, and incredibly warm, casting long, gentle shadows.",
+  "mood_atmosphere": "Intimate, contemplative, and subtly melancholic, yet quietly joyful. A pervasive sense of peaceful isolation and fragile beauty.",
+  "primary_characters": [
+    "Theodore Twombly: Mid-30s, relaxed attire, listening intently with an earpiece.",
+    "His expression shifts between introspection and subtle smiles, conveying deep absorption."
+  ],
+  "secondary_characters_elements": [
+    "Few or no other figures, emphasizing Theodore's solitary focus.",
+    "Gentle, rhythmic ocean waves provide a calming backdrop."
+  ],
+  "additional_visual_directives_style_notes": [
+    "Soft, shallow depth of field with a dreamlike quality; warm, muted color palette.",
+    "Emphasize light wrapping around Theodore; focus on his subtle expressions."
+  ]
+}
+```
+
+![AI Render](../../assets/Her_photo.jpeg)
+
+
+## Lastly
+
+**PRO TIP 1:** Want a PNG with a transparent background? Explicitly set `"background"` to `"Transparent alpha channel"`. Don't leave it to chance.
+
+**PRO TIP 2:** If you're compositing, make sure the `"camera_angle"` in your prompt matches that of the photo or object you're applying the material to. Details matter for seamless integration.
+
+Ultimately, using structured data gives you a powerful lever over AI image generation. It shifts you from guessing to defining, from hoping to achieving predictable results. That's the real win.

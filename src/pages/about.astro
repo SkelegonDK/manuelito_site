@@ -1,0 +1,15 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import AboutComponent from '@/components/About.astro';
+
+const title = "About Me";
+const description = `
+  <p class=\"text-center\">
+    Bio, Core Competencies, Languages, and more.
+  </p>
+`;
+---
+
+<BaseLayout title={title} description={description}>
+	<AboutComponent />
+</BaseLayout>

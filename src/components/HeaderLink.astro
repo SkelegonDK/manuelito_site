@@ -1,0 +1,52 @@
+---
+import type { HTMLAttributes } from 'astro/types';
+
+type Props = HTMLAttributes<'a'> & {
+  text: string;
+  style: Type;
+};
+
+type Type = "primary" | "secondary" | "tertiary";
+
+const { href, text, style, class: className, ...props } = Astro.props;
+
+const types: Record<Type, string> = {
+  primary: "text-liquirice dark:text-jabro",
+  secondary: "text-liquirice dark:text-jabro",
+  tertiary: "text-liquirice dark:text-jabro",
+};
+
+const getType = (style: Type) => {
+  return types[style];
+};
+
+const pathname = Astro.url.pathname;
+const subpath = pathname.match(/[^\/]+/g);
+const isActive = href === pathname || href === '/' + (subpath?.[0] || '');
+---
+
+<a
+  href={href}
+  class:list={[
+    className, 
+    `frick rounded-md inline-block px-4 py-1 transition ease-in-out ${getType(style)}`,
+    { active: isActive }
+  ]}
+  data-nav-link={href}
+  {...props}
+>
+  {text}
+</a>
+
+<style>
+  a {
+    display: inline-block;
+    text-decoration: none;
+    transition: color 0.3s ease;
+  }
+  
+  a.active {
+    text-decoration: underline;
+    text-decoration-color: var(--nintendbro);
+  }
+</style>

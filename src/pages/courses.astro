@@ -1,0 +1,21 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import CourseCard from '@/components/CourseCard.astro';
+
+const courses = await getCollection('courses');
+---
+
+<BaseLayout title="Courses" description="Strategic AI implementation training that amplifies your team's creative capabilities and builds sustainable competitive advantage.">
+  <div class="container max-w-6xl mx-auto py-12 px-4">
+    <h1 class="text-6xl  text-liquirice dark:text-jabro text-center mb-12">On site GEN-AI Training</h1>
+    <p class="text-xl text-liquirice dark:text-white mb-12">
+      Get real world experience and insights about what generative AI can do for you.
+    </p>
+    <div class="grid gap-6 w-full grid-cols-1 md:grid-cols-[repeat(auto-fit,minmax(600px,1fr))]">
+      {courses.map((course, index) => (
+        <CourseCard course={course.data} slug={`/courses/${course.slug}`} index={index} />
+      ))}
+    </div>
+  </div>
+</BaseLayout>

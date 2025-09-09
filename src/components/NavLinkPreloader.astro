@@ -1,0 +1,167 @@
+---
+// Optimized Navigation Link Preloader Component
+// This component implements efficient preloading without blocking page render
+
+interface Props {
+  path: string;
+}
+
+const { path } = Astro.props;
+
+// Import images statically at build time so Astro can generate correct production URLs
+// This ensures the preloader works in both development and production
+import manuelImg from '@/assets/manuel.png';
+import toThinkImg from '@/assets/to-think.png';
+import elevenlabsImg from '@/assets/Elevenlabs.png';
+import imageGenImg from '@/assets/Image generation.png';
+import comfyuiImg from '@/assets/ComfyUI WebApp.png';
+import avatarImg from '@/assets/Avatar production_@0.5x.png';
+import cursorImg from '@/assets/cursor-rules.png';
+import windowImg from '@/assets/business/8dd5a3b51f58c6529f9bd9cb8fac890071adab94.jpeg';
+import windowImg2 from '@/assets/business/ComfyUI_00026_.jpeg';
+
+const pathToImages = {
+  '/about': [manuelImg],
+  '/blog': [toThinkImg],
+  '/courses': [
+    cursorImg,
+    elevenlabsImg,
+    imageGenImg,
+    comfyuiImg,
+    avatarImg
+  ],
+  '/gallery': [
+    windowImg,
+    windowImg2
+  ],
+  '/': [
+    manuelImg
+  ]
+};
+
+// Get the images for the current path
+const imagesToPreload = pathToImages[path as keyof typeof pathToImages] || [];
+---
+
+<div class="nav-preloader" data-path={path}>
+  {imagesToPreload.map(img => (
+    <link rel="prefetch" href={img.src} as="image" />
+  ))}
+</div>
+
+<script>
+  // Optimized navigation preloading system
+  // Now works correctly in both development and production
+  class OptimizedNavPreloader {
+    private preloadedPaths: Set<string> = new Set();
+    private preloadQueue: Set<string> = new Set();
+    private isProcessing = false;
+    
+    constructor() {
+      this.setupEventListeners();
+    }
+    
+    private setupEventListeners() {
+      // Use a single event listener for better performance
+      document.addEventListener('mouseover', this.handleMouseOver.bind(this), { passive: true });
+      
+      // Setup on page load
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', this.initialize.bind(this));
+      } else {
+        this.initialize();
+      }
+      
+      // Handle Astro page transitions
+      document.addEventListener('astro:page-load', this.initialize.bind(this));
+    }
+    
+    private initialize() {
+      // Mark current page as preloaded
+      const currentPath = window.location.pathname;
+      this.preloadedPaths.add(currentPath);
+      
+      // Preload critical images for current page
+      this.preloadCriticalImages(currentPath);
+    }
+    
+    private handleMouseOver(event: Event) {
+      const target = event.target as HTMLElement;
+      const navLink = target.closest('a[data-nav-link]');
+      
+      if (navLink && !this.isProcessing) {
+        const path = navLink.getAttribute('data-nav-link');
+        if (path && !this.preloadedPaths.has(path)) {
+          // Use requestIdleCallback for non-critical preloading
+          if ('requestIdleCallback' in window) {
+            requestIdleCallback(() => this.preloadImagesForPath(path));
+          } else {
+            // Fallback for older browsers
+            setTimeout(() => this.preloadImagesForPath(path), 100);
+          }
+        }
+      }
+    }
+    
+    private preloadCriticalImages(path: string) {
+      const preloader = document.querySelector(`.nav-preloader[data-path="${path}"]`);
+      if (!preloader) return;
+      
+      const prefetchLinks = preloader.querySelectorAll('link[rel="prefetch"]');
+      prefetchLinks.forEach(link => {
+        const href = link.getAttribute('href');
+        if (href) {
+          this.preloadImage(href);
+        }
+      });
+    }
+    
+    private async preloadImagesForPath(path: string) {
+      if (this.preloadedPaths.has(path) || this.preloadQueue.has(path)) return;
+      
+      this.preloadQueue.add(path);
+      this.isProcessing = true;
+      
+      try {
+        const preloader = document.querySelector(`.nav-preloader[data-path="${path}"]`);
+        if (!preloader) return;
+        
+        const prefetchLinks = preloader.querySelectorAll('link[rel="prefetch"]');
+        
+        // Preload images with priority
+        for (const link of prefetchLinks) {
+          const href = link.getAttribute('href');
+          if (href) {
+            await this.preloadImage(href);
+            // Small delay to prevent overwhelming the browser
+            await new Promise(resolve => setTimeout(resolve, 50));
+          }
+        }
+        
+        this.preloadedPaths.add(path);
+        console.log(`✅ Preloaded images for ${path}`);
+        
+      } catch (error) {
+        console.warn(`⚠️ Failed to preload images for ${path}:`, error);
+      } finally {
+        this.preloadQueue.delete(path);
+        this.isProcessing = false;
+      }
+    }
+    
+    private preloadImage(src: string): Promise<void> {
+      return new Promise((resolve) => {
+        const img = new Image();
+        img.onload = () => resolve();
+        img.onerror = () => resolve(); // Don't fail on error
+        img.src = src;
+        
+        // Timeout fallback
+        setTimeout(() => resolve(), 5000);
+      });
+    }
+  }
+  
+  // Initialize the optimized preloader
+  new OptimizedNavPreloader();
+</script> 

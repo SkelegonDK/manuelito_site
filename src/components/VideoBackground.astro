@@ -1,0 +1,598 @@
+---
+import { getImage } from 'astro:assets';
+import skyPlaceholder from '@/assets/sky_placeholder.png';
+
+// Optimize the placeholder image
+const optimizedPlaceholder = await getImage({
+  src: skyPlaceholder,
+  format: 'webp',
+  quality: 80
+});
+---
+
+<!-- Video Background Component - Lives in BaseLayout and persists across page transitions -->
+<div id="video-background" class="fixed-video-background">
+  <!-- Placeholder background image that shows while video loads -->
+  <div 
+    class="video-placeholder dark:invert" 
+    style={`background-image: url('${optimizedPlaceholder.src}');`}
+    id="video-placeholder"
+  ></div>
+  <div class="video-overlay"></div>
+  
+  <!-- Video element with optimized attributes and mobile WebM support -->
+  <video
+    class="video-bg dark:invert"
+    playsinline
+    autoplay
+    muted
+    loop
+    preload="none"
+    id="bgvid"
+    poster="/video-poster.jpg"
+    data-video-src="/sky.mp4"
+  >
+    <!-- WebM format for mobile devices (better compression, smaller file) -->
+    <source src="/sky.webm" type="video/webm" />
+    <!-- MP4 fallback for older browsers and desktop -->
+    <source src="/sky.mp4" type="video/mp4" />
+  </video>
+</div>
+
+<script>
+  /**
+   * Video Background Component
+   * Handles video loading, placeholder management, and persistence across page navigation
+   * This component lives in BaseLayout.astro and never reloads during navigation
+   * Optimized for mobile with WebM support and enhanced autoplay handling
+   */
+  class VideoBackgroundComponent {
+    private video: HTMLVideoElement | null = null;
+    private placeholder: HTMLDivElement | null = null;
+    private isInitialized = false;
+    private isVideoLoading = false;
+    private videoReady = false;
+    private isMobileDevice = false;
+    private cleanupFunctions: (() => void)[] = [];
+
+    constructor() {
+      this.detectDeviceType();
+      this.init();
+    }
+
+    /**
+     * Detect if we're on a mobile device
+     */
+    private detectDeviceType(): void {
+      this.isMobileDevice = window.innerWidth <= 768 || 
+        /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+      
+      console.debug(`VideoBackgroundComponent: Device detected as ${this.isMobileDevice ? 'mobile' : 'desktop'}`);
+    }
+
+    /**
+     * Initialize the video background component
+     */
+    init(): void {
+      if (this.isInitialized) return;
+
+      // Check if video was already ready from previous navigation
+      const wasVideoReady = sessionStorage.getItem('videoReady') === 'true';
+      if (wasVideoReady) {
+        this.videoReady = true;
+        // Hide placeholder immediately if video was ready
+        this.hidePlaceholderPermanently();
+      }
+
+      // Initialize after DOM is ready
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', () => this.initializeVideo());
+      } else {
+        this.initializeVideo();
+      }
+    }
+
+    /**
+     * Initialize video functionality
+     */
+    private initializeVideo(): void {
+      try {
+        this.video = document.getElementById('bgvid') as HTMLVideoElement;
+        this.placeholder = document.getElementById('video-placeholder') as HTMLDivElement;
+
+        if (!this.video || !this.placeholder) {
+          console.warn('VideoBackgroundComponent: Required elements not found');
+          return;
+        }
+
+        // Set mobile-optimized attributes
+        this.optimizeForDevice();
+        
+        this.setupVideoLoading();
+        this.setupViewTransitions();
+        this.isInitialized = true;
+
+        console.debug('VideoBackgroundComponent: Initialized successfully');
+      } catch (error) {
+        console.error('VideoBackgroundComponent initialization failed:', error);
+      }
+    }
+
+    /**
+     * Optimize video element for device type
+     */
+    private optimizeForDevice(): void {
+      if (!this.video) return;
+
+      if (this.isMobileDevice) {
+        // Mobile optimizations
+        this.video.preload = 'metadata'; // Load metadata for faster start
+        this.video.playsInline = true; // Ensure inline playback on mobile
+        
+        // Set mobile-specific quality preferences
+        if ('mediaCapabilities' in navigator) {
+          // Check if WebM is supported and preferred
+          navigator.mediaCapabilities.decodingInfo({
+            type: 'file',
+            video: {
+              contentType: 'video/webm; codecs="vp9"',
+              width: 1920,
+              height: 1080,
+              bitrate: 1000000, // 1Mbps for mobile
+              framerate: 30
+            }
+          }).then(result => {
+            if (result.supported && result.smooth && result.powerEfficient) {
+              console.debug('VideoBackgroundComponent: WebM VP9 supported, using optimized format');
+            }
+          }).catch(() => {
+            console.debug('VideoBackgroundComponent: WebM VP9 not supported, falling back to MP4');
+          });
+        }
+      } else {
+        // Desktop optimizations
+        this.video.preload = 'none'; // No preloading on desktop
+      }
+    }
+
+    /**
+     * Setup video loading and placeholder management
+     */
+    private setupVideoLoading(): void {
+      if (!this.video || !this.placeholder) return;
+
+      // Add event listeners for video states
+      this.video.addEventListener('canplaythrough', () => this.onVideoReady());
+      this.video.addEventListener('loadeddata', () => this.onVideoLoaded());
+      this.video.addEventListener('canplay', () => this.onVideoCanPlay());
+      this.video.addEventListener('error', (e) => this.onVideoError(e));
+
+      // Handle autoplay restrictions
+      this.video.addEventListener('play', () => this.onVideoPlay());
+      this.video.addEventListener('pause', () => this.onVideoPause());
+
+      // Start video loading if not already loaded
+      if (this.video.readyState === 0) {
+        this.safeLoadVideo();
+      } else if (this.video.readyState >= 3) {
+        // Video already has data, mark as ready
+        this.onVideoReady();
+      }
+    }
+
+    /**
+     * Setup view transition handling for Astro navigation
+     */
+    private setupViewTransitions(): void {
+      // Handle Astro view transitions
+      document.addEventListener('astro:before-swap', () => this.beforePageSwap());
+      document.addEventListener('astro:after-swap', () => this.afterPageSwap());
+      document.addEventListener('astro:before-preparation', () => this.beforePagePreparation());
+    }
+
+    /**
+     * Safely load video only once to prevent duplicate downloads
+     */
+    private safeLoadVideo(): void {
+      if (!this.video || this.isVideoLoading) return;
+      
+      this.isVideoLoading = true;
+      
+      // Only load if the video hasn't started loading yet
+      if (this.video.readyState === 0) {
+        this.video.load();
+      }
+      
+      // Reset loading state after a short delay
+      setTimeout(() => {
+        this.isVideoLoading = false;
+      }, 1000);
+    }
+
+    /**
+     * Handle video ready state
+     */
+    private onVideoReady(): void {
+      if (this.videoReady) return;
+      
+      this.videoReady = true;
+      this.hidePlaceholderPermanently();
+      
+      // Store state for navigation persistence
+      sessionStorage.setItem('videoReady', 'true');
+      
+      console.debug('VideoBackgroundComponent: Video ready, placeholder hidden');
+    }
+
+    /**
+     * Handle video loaded data
+     */
+    private onVideoLoaded(): void {
+      if (this.videoReady) return;
+      
+      // Video has data, ensure it's playing
+      this.ensureVideoPlayback();
+    }
+
+    /**
+     * Handle video can play
+     */
+    private onVideoCanPlay(): void {
+      if (this.videoReady) return;
+      
+      // Video can start playing
+      this.ensureVideoPlayback();
+    }
+
+    /**
+     * Handle video play event
+     */
+    private onVideoPlay(): void {
+      // Video started playing successfully
+      console.debug('VideoBackgroundComponent: Video playing');
+    }
+
+    /**
+     * Handle video pause event
+     */
+    private onVideoPause(): void {
+      // Video paused, try to resume if it was autoplay restriction
+      if (this.videoReady && this.video?.paused) {
+        setTimeout(() => this.ensureVideoPlayback(), 100);
+      }
+    }
+
+    /**
+     * Handle video error
+     */
+    private onVideoError(e: Event): void {
+      console.warn('VideoBackgroundComponent: Video error:', e);
+      
+      // Try to fallback to MP4 if WebM fails
+      if (this.isMobileDevice && this.video) {
+        const currentSrc = this.video.currentSrc;
+        if (currentSrc.includes('.webm')) {
+          console.debug('VideoBackgroundComponent: WebM failed, trying MP4 fallback');
+          // The MP4 source is already in the HTML, browser should auto-fallback
+        }
+      }
+      
+      // Keep placeholder visible on error
+    }
+
+    /**
+     * Ensure video is playing (handles autoplay restrictions)
+     */
+    private ensureVideoPlayback(): void {
+      if (!this.video || !this.videoReady) return;
+
+      try {
+        if (this.video.paused) {
+          if (this.isMobileDevice) {
+            // On mobile, use enhanced autoplay handling
+            this.handleMobileAutoplay();
+          } else {
+            // On desktop, try standard autoplay
+            const playPromise = this.video.play();
+            if (playPromise !== undefined) {
+              playPromise.catch(error => {
+                console.debug('VideoBackgroundComponent: Desktop autoplay prevented:', error.message);
+              });
+            }
+          }
+        }
+      } catch (error) {
+        console.debug('VideoBackgroundComponent: Playback error:', error);
+      }
+    }
+
+    /**
+     * Handle mobile autoplay with user interaction detection
+     */
+    private handleMobileAutoplay(): void {
+      if (!this.video) return;
+
+      // Try immediate autoplay first
+      const playPromise = this.video.play();
+      if (playPromise !== undefined) {
+        playPromise.then(() => {
+          console.debug('VideoBackgroundComponent: Mobile autoplay successful');
+        }).catch(error => {
+          console.debug('VideoBackgroundComponent: Mobile autoplay failed, waiting for user interaction');
+          this.waitForUserInteraction();
+        });
+      }
+    }
+
+    /**
+     * Wait for user interaction to start video on mobile
+     */
+    private waitForUserInteraction(): void {
+      const handleInteraction = () => {
+        if (this.video && this.video.paused) {
+          this.video.play().then(() => {
+            console.debug('VideoBackgroundComponent: Video started after user interaction');
+          }).catch(error => {
+            console.debug('VideoBackgroundComponent: Failed to start after interaction:', error.message);
+          });
+        }
+        
+        // Clean up event listeners
+        document.removeEventListener('touchstart', handleInteraction);
+        document.removeEventListener('scroll', handleInteraction);
+        document.removeEventListener('click', handleInteraction);
+      };
+      
+      // Listen for various user interactions
+      document.addEventListener('touchstart', handleInteraction, { once: true });
+      document.addEventListener('scroll', handleInteraction, { once: true });
+      document.addEventListener('click', handleInteraction, { once: true });
+      
+      // Fallback timeout
+      setTimeout(() => {
+        document.removeEventListener('touchstart', handleInteraction);
+        document.removeEventListener('scroll', handleInteraction);
+        document.removeEventListener('click', handleInteraction);
+      }, 10000); // 10 second timeout
+    }
+
+    /**
+     * Hide placeholder permanently after video loads
+     */
+    private hidePlaceholderPermanently(): void {
+      if (!this.placeholder) return;
+      
+      // Use display: none for permanent hiding
+      this.placeholder.style.opacity = '0';
+      this.placeholder.style.display = 'none';
+      
+      // Store state to prevent reappearance
+      sessionStorage.setItem('videoReady', 'true');
+    }
+
+    /**
+     * Handle page swap before navigation
+     */
+    private beforePageSwap(): void {
+      if (!this.video) return;
+      
+      // Save current video state
+      if (this.videoReady) {
+        sessionStorage.setItem('videoTime', this.video.currentTime.toString());
+        sessionStorage.setItem('videoReady', 'true');
+        sessionStorage.setItem('videoFormat', this.video.currentSrc.includes('.webm') ? 'webm' : 'mp4');
+      }
+    }
+
+    /**
+     * Handle page swap after navigation
+     */
+    private afterPageSwap(): void {
+      if (!this.video) return;
+      
+      // Restore video state if it was ready
+      const wasReady = sessionStorage.getItem('videoReady') === 'true';
+      if (wasReady) {
+        this.restoreVideoState();
+      }
+    }
+
+    /**
+     * Handle page preparation
+     */
+    private beforePagePreparation(): void {
+      // Clean up any pending operations
+      this.cleanup();
+    }
+
+    /**
+     * Restore video state after navigation
+     */
+    private restoreVideoState(): void {
+      if (!this.video) return;
+      
+      try {
+        // Restore video time if available
+        const savedTime = sessionStorage.getItem('videoTime');
+        if (savedTime) {
+          const time = parseFloat(savedTime);
+          if (!isNaN(time) && time > 0) {
+            this.video.currentTime = time;
+          }
+        }
+        
+        // Ensure video is playing
+        this.ensureVideoPlayback();
+        
+        // Hide placeholder if video is ready
+        if (this.videoReady) {
+          this.hidePlaceholderPermanently();
+        }
+        
+        console.debug('VideoBackgroundComponent: Video state restored');
+      } catch (error) {
+        console.warn('VideoBackgroundComponent: State restoration failed:', error);
+      }
+    }
+
+    /**
+     * Force video to play (for testing/debugging)
+     */
+    public forcePlay(): void {
+      if (this.video) {
+        this.video.play().catch(error => {
+          console.debug('VideoBackgroundComponent: Force play failed:', error);
+        });
+      }
+    }
+
+    /**
+     * Check if video element is ready
+     */
+    public isVideoElementReady(): boolean {
+      return this.video !== null && this.video.readyState >= 3;
+    }
+
+    /**
+     * Get current video state
+     */
+    public getVideoState(): { ready: boolean; playing: boolean; time: number; format: string; isMobile: boolean } {
+      if (!this.video) {
+        return { ready: false, playing: false, time: 0, format: 'none', isMobile: this.isMobileDevice };
+      }
+      
+      return {
+        ready: this.videoReady,
+        playing: !this.video.paused,
+        time: this.video.currentTime,
+        format: this.video.currentSrc.includes('.webm') ? 'webm' : 'mp4',
+        isMobile: this.isMobileDevice
+      };
+    }
+
+    /**
+     * Get device information
+     */
+    public getDeviceInfo(): { isMobile: boolean; userAgent: string; viewport: { width: number; height: number } } {
+      return {
+        isMobile: this.isMobileDevice,
+        userAgent: navigator.userAgent,
+        viewport: { width: window.innerWidth, height: window.innerHeight }
+      };
+    }
+
+    /**
+     * Clean up resources
+     */
+    private cleanup(): void {
+      this.cleanupFunctions.forEach(cleanup => cleanup());
+      this.cleanupFunctions = [];
+    }
+
+    /**
+     * Destroy component
+     */
+    public destroy(): void {
+      this.cleanup();
+      this.isInitialized = false;
+    }
+  }
+
+  // Initialize video background component
+  let videoBackground: VideoBackgroundComponent;
+
+  // Initialize after DOM is ready
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', () => {
+      videoBackground = new VideoBackgroundComponent();
+      // Expose for debugging and testing
+      (window as any).videoBackground = videoBackground;
+    });
+  } else {
+    videoBackground = new VideoBackgroundComponent();
+    // Expose for debugging and testing
+    (window as any).videoBackground = videoBackground;
+  }
+
+  // Handle page unload
+  window.addEventListener('beforeunload', () => {
+    if (videoBackground) {
+      videoBackground.destroy();
+    }
+  });
+</script>
+
+<style>
+  /* Fixed video background */
+  .fixed-video-background {
+    position: fixed;
+    top: -5vh;
+    left: -5vw;
+    width: 110vw;
+    height: 110vh;
+    z-index: -1;
+    overflow: hidden;
+  }
+  
+  /* Video overlay */
+  .video-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: var(--overlay-bg);
+    z-index: 2;
+  }
+  
+  /* Video placeholder styles */
+  .video-placeholder {
+    width: 100%;
+    height: 100%;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 0;
+    opacity: 0;
+    transition: opacity 0.5s ease-in-out;
+  }
+  
+  /* Base video styles */
+  .video-bg {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 1;
+  }
+  
+  /* Dark mode inversion */
+  html[data-theme="dark"] .video-bg,
+  html.dark .video-bg,
+  html[data-theme="dark"] .video-placeholder,
+  html.dark .video-placeholder {
+    filter: invert(1) hue-rotate(180deg);
+  }
+
+  /* Mobile-specific video optimizations */
+  @media (max-width: 768px) {
+    .video-bg {
+      /* Optimize for mobile performance */
+      will-change: transform;
+      transform: translateZ(0); /* Force hardware acceleration */
+    }
+    
+    .fixed-video-background {
+      /* Reduce mobile viewport size for better performance */
+      top: -2vh;
+      left: -2vw;
+      width: 104vw;
+      height: 104vh;
+    }
+  }
+</style> 
