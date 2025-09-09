@@ -1,7 +1,6 @@
 /** @type {import('tailwindcss').Config} */
-import { withUt } from "uploadthing/tw";
 
-export default withUt({
+export default {
   darkMode: ['class', '[data-theme="dark"]'],
   content: ["./src/**/*.{astro,html,js,jsx,md,mdx,svelte,ts,tsx,vue}"],
   theme: {
@@ -98,4 +97,4 @@ export default withUt({
     },
   },
   plugins: [require("@tailwindcss/typography")],
-});
+};

@@ -67,7 +67,6 @@
     "@sendgrid/mail": "^8.1.5",
     "@tailwindcss/vite": "^4.1.10",
     "@types/uuid": "^10.0.0",
-    "@uploadthing/react": "^7.3.2",
     "astro": "^5.10.2",
     "astro-icon": "^1.1.5",
     "hamburgers": "^1.2.1",
